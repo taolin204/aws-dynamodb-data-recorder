@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+  <classpathentry kind="src" path="src/main/java" including="**/*.java"/>
+  <classpathentry kind="output" path="target/classes"/>
+  <classpathentry kind="var" path="M2_REPO/javax/servlet/jstl/1.2/jstl-1.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/javax/servlet/jsp/jsp-api/2.1/jsp-api-2.1.jar"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+  <classpathentry kind="var" path="M2_REPO/org/primefaces/primefaces/6.1/primefaces-6.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/sun/faces/jsf-api/2.2.14/jsf-api-2.2.14.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/sun/faces/jsf-impl/2.2.14/jsf-impl-2.2.14.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/google/code/gson/gson/2.8.2/gson-2.8.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/fluttercode/datafactory/datafactory/0.8/datafactory-0.8.jar"/>
+</classpath>
