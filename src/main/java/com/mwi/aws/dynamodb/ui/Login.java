@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package com.mwi.aws.dynamodb;
+package com.mwi.aws.dynamodb.ui;
 
 //import com.mwi.cad.web.jms.CADServiceManager;
 //import com.mwi.cad.client.util.MwiResourceMap;
@@ -15,6 +15,8 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+
+import com.mwi.aws.dynamodb.SessionBean;
 
 /**
  *

@@ -6,7 +6,7 @@
  *
  */
 
-package com.mwi.aws.dynamodb;
+package com.mwi.aws.dynamodb.ui;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +19,9 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.view.facelets.FaceletContext;
 import org.primefaces.context.RequestContext;
+
+import com.mwi.aws.dynamodb.ApplicationBean;
+import com.mwi.aws.dynamodb.SessionBean;
 
 /**
  * TODO: Enter short description

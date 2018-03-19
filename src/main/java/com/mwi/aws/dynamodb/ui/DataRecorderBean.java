@@ -1,22 +1,22 @@
-package com.logicbig.example;
+package com.mwi.aws.dynamodb.ui;
 
 import org.fluttercode.datafactory.impl.DataFactory;
-import org.primefaces.component.api.UIColumn;
 import org.primefaces.component.datatable.DataTable;
-import org.primefaces.component.headerrow.HeaderRow;
+
+import com.mwi.aws.dynamodb.model.Employee;
+import com.mwi.aws.dynamodb.service.CarService;
+import com.mwi.aws.dynamodb.service.UserService;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
 import java.util.*;
 
 @ManagedBean
 @ViewScoped
-public class EmployeeBean {
+public class DataRecorderBean {
 	
 	private List<ColumnModel> columns = new ArrayList<ColumnModel>(0);
     private List<String> selectedColumns = new ArrayList<>();

@@ -1,4 +1,4 @@
-package com.logicbig.example;
+package com.mwi.aws.dynamodb.model;
 
 public class Employee {
     private long id;

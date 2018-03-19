@@ -1,9 +1,11 @@
-package com.logicbig.example;
+package com.mwi.aws.dynamodb.service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.fluttercode.datafactory.impl.DataFactory;
+
+import com.mwi.aws.dynamodb.model.Car;
 
 public class CarService {
 

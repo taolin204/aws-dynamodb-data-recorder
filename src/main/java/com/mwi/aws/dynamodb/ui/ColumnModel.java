@@ -1,4 +1,4 @@
-package com.logicbig.example;
+package com.mwi.aws.dynamodb.ui;
 
 import java.io.Serializable;
 

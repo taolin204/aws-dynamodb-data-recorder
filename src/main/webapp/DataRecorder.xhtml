@@ -14,15 +14,15 @@
     
     	<h:panelGrid columns="3">
 	        <h:outputText value="Keyup: " />
-	        <p:inputText id="counter" value="#{employeeBean.text}">
-	            <p:ajax event="keyup" update="myTable" listener="#{employeeBean.handleKeyEvent}" />
+	        <p:inputText id="counter" value="#{dataRecorderBean.text}">
+	            <p:ajax event="keyup" update="myTable" listener="#{dataRecorderBean.handleKeyEvent}" />
 	        </p:inputText>
-	        <h:outputText id="out" value="#{employeeBean.text}" />
+	        <h:outputText id="out" value="#{dataRecorderBean.text}" />
 	    </h:panelGrid>
     
-        <p:selectCheckboxMenu value="#{employeeBean.selectedColumns}"
+        <p:selectCheckboxMenu value="#{dataRecorderBean.selectedColumns}"
                               label="Table Columns">
-            <f:selectItems value="#{employeeBean.columnMap.entrySet()}"
+            <f:selectItems value="#{dataRecorderBean.columnMap.entrySet()}"
                            var="entry"
                            itemValue="#{entry.key}"
                            itemLabel="#{entry.value}"/>
@@ -31,9 +31,9 @@
         </p:selectCheckboxMenu>
         <br/>
 		
-		<p:dataTable id="myTable" var="obj" value="#{employeeBean.data}">
+		<p:dataTable id="myTable" var="obj" value="#{dataRecorderBean.data}">
 	        <p:columns
-	            value="#{employeeBean.columns}"
+	            value="#{dataRecorderBean.columns}"
 	            var="column"
 	            headerText="#{column.header}">
 	            <p:selectBooleanCheckbox
