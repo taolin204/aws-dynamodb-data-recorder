@@ -1,1 +1,3 @@
 mvn clean package
+
+pause

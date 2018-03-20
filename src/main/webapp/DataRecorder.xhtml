@@ -4,47 +4,58 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"  
       xmlns:f="http://java.sun.com/jsf/core">
-<h:head></h:head>
-
+<h:head>
+	<f:facet name="first">  
+		<meta http-equiv="X-UA-Compatible" content="EmulateIE8" />  
+	 	<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />  
+		<title>PrimeFaces Layout</title>  
+	</f:facet>  
+	<style type="text/css"></style>  
+</h:head>
+	
 <h:body>
     <h2>Primefaces Dynamic DataTable example</h2>
-    
     <h:form id="form">
-    
-    	<h:panelGrid columns="3">
-	        <h:outputText value="Keyup: " />
-	        <p:inputText id="counter" value="#{dataRecorderBean.text}">
-	            <p:ajax event="keyup" update="myTable" listener="#{dataRecorderBean.handleKeyEvent}" />
-	        </p:inputText>
-	        <h:outputText id="out" value="#{dataRecorderBean.text}" />
-	    </h:panelGrid>
-    
-        <p:selectCheckboxMenu value="#{dataRecorderBean.selectedColumns}"
-                              label="Table Columns">
-            <f:selectItems value="#{dataRecorderBean.columnMap.entrySet()}"
-                           var="entry"
-                           itemValue="#{entry.key}"
-                           itemLabel="#{entry.value}"/>
-
-            <p:ajax event="change" update="myTable"/>
-        </p:selectCheckboxMenu>
-        <br/>
-		
-		<p:dataTable id="myTable" var="obj" value="#{dataRecorderBean.data}">
-	        <p:columns
-	            value="#{dataRecorderBean.columns}"
-	            var="column"
-	            headerText="#{column.header}">
-	            <p:selectBooleanCheckbox
-	                value="#{obj[column.property]}"
-	                disabled="true"
-	                rendered="#{column.type.toString() == 'boolean'}"/>
-	            <h:outputText value="#{obj[column.property]}" rendered="#{column.type.toString() != 'boolean'}" />
-	        </p:columns>
-	    </p:dataTable>
-    
-
-    </h:form>
+	    <p:layout id="myPage" fullPage="true">
+	    
+			<p:layoutUnit position="north" size="100" header="Top" resizable="true" closable="true" collapsible="true">
+	            <h:outputText value="顶部区域" />
+	        </p:layoutUnit>
+	        
+	 		<p:layoutUnit position="south" size="100" header="Bottom" resizable="true" closable="true" collapsible="true">
+	            <h:outputText value="底部区域" />
+	        </p:layoutUnit>
+	        
+	    	<p:layoutUnit position="west" size="300" header="左部" collapsible="true" footer="左底" gutter="1" effect="drop">
+	            <p:menu id="myMenu" model="#{dataRecorderBean.model}"/>
+	        </p:layoutUnit>
+	        
+	        <p:layoutUnit position="center" closable="true" collapsible="true" header="Contents">
+		    
+		    	<h:panelGrid columns="3">
+			        <h:outputText value="Keyup: " />
+			        <p:inputText id="counter" value="#{dataRecorderBean.text}">
+			            <p:ajax event="keyup" update="myMenu myTable" listener="#{dataRecorderBean.handleKeyEvent}" />
+			        </p:inputText>
+			        <h:outputText id="out" value="#{dataRecorderBean.text}" />
+			    </h:panelGrid>
+		    
+				<p:dataTable id="myTable" var="obj" value="#{dataRecorderBean.data}">
+			        <p:columns
+			            value="#{dataRecorderBean.columns}"
+			            var="column"
+			            headerText="#{column.header}">
+			            <p:selectBooleanCheckbox
+			                value="#{obj[column.property]}"
+			                disabled="true"
+			                rendered="#{column.type.toString() == 'boolean'}"/>
+			            <h:outputText value="#{obj[column.property]}" rendered="#{column.type.toString() != 'boolean'}" />
+			        </p:columns>
+			    </p:dataTable>
+			</p:layoutUnit>
+    	</p:layout>
+	</h:form>
 </h:body>
 </html>
