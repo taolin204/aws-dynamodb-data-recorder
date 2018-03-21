@@ -1,7 +1,10 @@
 package com.mwi.aws.dynamodb.ui;
 
 import org.fluttercode.datafactory.impl.DataFactory;
+import org.primefaces.component.api.DynamicColumn;
+import org.primefaces.component.api.UIColumn;
 import org.primefaces.component.datatable.DataTable;
+import org.primefaces.event.CellEditEvent;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;
@@ -265,4 +268,20 @@ public class DataRecorderBean {
 //        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, summary, detail);
 //        FacesContext.getCurrentInstance().addMessage(null, message);
 //    }
+    
+    public void onCellEdit(CellEditEvent event) {
+    	
+//    	int alteredRow = event.getRowIndex();
+//    	int alteredCol = ((DynamicColumn)event.getColumn()).getIndex();
+//    	
+//    	System.out.println("onCellEdit " + alteredRow +  ", " + alteredCol);
+        Object oldValue = event.getOldValue();
+        Object newValue = event.getNewValue();
+        //System.out.println("Cell Changed" + " Old: " + oldValue + ", New:" + newValue);
+        if(newValue != null && !newValue.equals(oldValue)) {
+        	System.out.println("Cell Changed" + " Old: " + oldValue + ", New:" + newValue);
+            //FacesContext.getCurrentInstance().addMessage(null, msg);
+        	System.out.println("DataList " + data.size());
+        }
+    }
 }

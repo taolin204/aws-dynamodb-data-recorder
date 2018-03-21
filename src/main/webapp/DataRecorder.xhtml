@@ -5,7 +5,8 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets"  
-      xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
 <h:head>
 	<f:facet name="first">  
 		<meta http-equiv="X-UA-Compatible" content="EmulateIE8" />  
@@ -42,17 +43,23 @@
 			        <h:outputText id="out" value="#{dataRecorderBean.text}" />
 			    </h:panelGrid>
 		    
-				<p:dataTable id="myTable" var="obj" value="#{dataRecorderBean.data}">
-			        <p:columns
-			            value="#{dataRecorderBean.columns}"
-			            var="column"
-			            headerText="#{column.header}">
-			            <p:selectBooleanCheckbox
-			                value="#{obj[column.property]}"
-			                disabled="true"
-			                rendered="#{column.type.toString() == 'boolean'}"/>
-			            <h:outputText value="#{obj[column.property]}" rendered="#{column.type.toString() != 'boolean'}" />
-			        </p:columns>
+				<p:dataTable id="myTable" var="obj" value="#{dataRecorderBean.data}"  editable="true" editMode="cell" widgetVar="cellDatas">
+				
+					<p:ajax event="cellEdit" listener="#{dataRecorderBean.onCellEdit}"  />
+					
+					<c:forEach items="#{dataRecorderBean.columns}" var="column" varStatus="colLoopStatus">
+			            <p:column headerText="#{column.header}">
+			               <p:cellEditor>
+			                  <f:facet name="output">
+			                     <h:outputText value="#{obj[column.property]}" />
+			                  </f:facet>
+			                  <f:facet name="input">
+			                     <p:inputText value="#{obj[column.property]}"  />
+			                  </f:facet>
+			               </p:cellEditor>      
+			            </p:column>
+			         </c:forEach>
+         
 			    </p:dataTable>
 			</p:layoutUnit>
     	</p:layout>
