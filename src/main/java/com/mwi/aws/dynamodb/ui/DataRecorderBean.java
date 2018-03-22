@@ -36,6 +36,8 @@ public class DataRecorderBean {
     private MenuModel model;
     private List<Object> data;
     
+    private String mapKey;
+    
     //@ManagedProperty(value = "#{table}")
     //private DataTable table;
     private String tableTag = ":form:myTable";
@@ -60,13 +62,13 @@ public class DataRecorderBean {
         	        ColumnModel columnDescriptor = new ColumnModel();
                     columnDescriptor.setProperty("username");         
                     columnDescriptor.setHeader("Username");        
-                    columnDescriptor.setType(String.class);        
+                    columnDescriptor.setType("String");        
                     columns.add(columnDescriptor);
                     
                     columnDescriptor = new ColumnModel();
                     columnDescriptor.setProperty("password");         
                     columnDescriptor.setHeader("Password");        
-                    columnDescriptor.setType(String.class);        
+                    columnDescriptor.setType("String");        
                     columns.add(columnDescriptor);
                     
                     model = new DefaultMenuModel();
@@ -121,21 +123,21 @@ public class DataRecorderBean {
     	        ColumnModel columnDescriptor = new ColumnModel();
                 columnDescriptor.setProperty("carNum");         
                 columnDescriptor.setHeader("CarNum");        
-                columnDescriptor.setType(String.class);        
+                columnDescriptor.setType("String");        
                 columns.add(columnDescriptor);
                 
                 System.out.println("init car table start 2");
                 columnDescriptor = new ColumnModel();
                 columnDescriptor.setProperty("carOwner");         
                 columnDescriptor.setHeader("CarOwner");        
-                columnDescriptor.setType(String.class);        
+                columnDescriptor.setType("String");        
                 columns.add(columnDescriptor);
         		
                 System.out.println("init car table start 3");
                 columnDescriptor = new ColumnModel();
-                columnDescriptor.setProperty("price");         
-                columnDescriptor.setHeader("Price");        
-                columnDescriptor.setType(String.class);        
+                columnDescriptor.setProperty("priceMap");         
+                columnDescriptor.setHeader("PriceMap");        
+                columnDescriptor.setType("Map");        
                 columns.add(columnDescriptor);
                 
                 model = new DefaultMenuModel();

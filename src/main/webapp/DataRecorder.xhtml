@@ -48,15 +48,29 @@
 					<p:ajax event="cellEdit" listener="#{dataRecorderBean.onCellEdit}"  />
 					
 					<c:forEach items="#{dataRecorderBean.columns}" var="column" varStatus="colLoopStatus">
-			            <p:column headerText="#{column.header}">
-			               <p:cellEditor>
-			                  <f:facet name="output">
-			                     <h:outputText value="#{obj[column.property]}" />
-			                  </f:facet>
-			                  <f:facet name="input">
-			                     <p:inputText value="#{obj[column.property]}"  />
-			                  </f:facet>
-			               </p:cellEditor>      
+			            <p:column headerText="#{column.type}">
+			            	<c:choose>
+			            		<c:when test="#{column.type eq 'Map'}">
+			            			<p:cellEditor>
+			            				<f:facet name="output">
+					                    	<h:outputText value="#{obj[column.property].keySet().toString()}"  />
+					                  	</f:facet>
+					                  	<f:facet name="input">
+					                    	<p:inputText value="#{obj[column.property]}"  />
+					                  	</f:facet>
+					            	</p:cellEditor>   
+			            		</c:when>
+			            		<c:otherwise>
+					               	<p:cellEditor>
+					                  <f:facet name="output">
+					                     <h:outputText value="#{obj[column.property]}" />
+					                  </f:facet>
+					                  <f:facet name="input">
+					                     <p:inputText value="#{obj[column.property]}"  />
+					                  </f:facet>
+					               	</p:cellEditor>   
+				               	</c:otherwise>
+							</c:choose>   
 			            </p:column>
 			         </c:forEach>
          

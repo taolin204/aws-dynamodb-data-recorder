@@ -10,7 +10,7 @@ public class DataColumnUtil {
 		ColumnModel column = new ColumnModel();
 		column.setHeader("column1");
 		column.setProperty("property1");
-		column.setType(String.class);
+		column.setType("String");
 		
 
 		XStream xstream = new XStream();

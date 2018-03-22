@@ -8,7 +8,7 @@ public class ColumnModel implements Serializable {
 	
 	private String property;
 	private String header;
-	private Class<?> type;
+	private String type;
 	
 	public ColumnModel() {}
 	
@@ -25,11 +25,11 @@ public class ColumnModel implements Serializable {
 		this.header = header;
 	}
 
-	public Class<?> getType() {
+	public String getType() {
 		return type;
 	}
 
-	public void setType(Class<?> type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 }

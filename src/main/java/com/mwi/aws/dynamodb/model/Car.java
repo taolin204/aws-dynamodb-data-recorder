@@ -1,10 +1,12 @@
 package com.mwi.aws.dynamodb.model;
 
+import java.util.Map;
+
 public class Car {
 
 	private String carNum;
 	private String carOwner;
-	private long price;
+	private Map priceMap;
 	
 	public String getCarNum() {
 		return carNum;
@@ -18,11 +20,11 @@ public class Car {
 	public void setCarOwner(String carOwner) {
 		this.carOwner = carOwner;
 	}
-	public long getPrice() {
-		return price;
+	public Map getPriceMap() {
+		return priceMap;
 	}
-	public void setPrice(long price) {
-		this.price = price;
+	public void setPriceMap(Map price) {
+		this.priceMap = price;
 	}
 	
 	
