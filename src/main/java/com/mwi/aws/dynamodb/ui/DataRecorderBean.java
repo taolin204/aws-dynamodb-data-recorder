@@ -1,6 +1,7 @@
 package com.mwi.aws.dynamodb.ui;
 
 import org.fluttercode.datafactory.impl.DataFactory;
+import org.primefaces.PrimeFaces;
 import org.primefaces.component.api.DynamicColumn;
 import org.primefaces.component.api.UIColumn;
 import org.primefaces.component.datatable.DataTable;
@@ -10,16 +11,22 @@ import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;
 import org.primefaces.model.menu.MenuModel;
 
+import com.mwi.aws.dynamodb.model.Car;
 import com.mwi.aws.dynamodb.model.Employee;
 import com.mwi.aws.dynamodb.service.CarService;
 import com.mwi.aws.dynamodb.service.UserService;
+
+import uk.co.jemos.podam.api.PodamFactory;
+import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 @ManagedBean
@@ -37,8 +44,17 @@ public class DataRecorderBean {
     private List<Object> data;
     
     private String mapKey;
+    private Object selectedCar;
+    private Object selectedCarKey;
+    private List<Object> selectedCars;
     
-    //@ManagedProperty(value = "#{table}")
+    private String username;
+    private String password;
+    private boolean loggedIn;
+    private List<ColumnModel> selColumns = new ArrayList<ColumnModel>(0);
+    
+    
+	//@ManagedProperty(value = "#{table}")
     //private DataTable table;
     private String tableTag = ":form:myTable";
     
@@ -60,13 +76,13 @@ public class DataRecorderBean {
         			
         	        columns = new ArrayList<ColumnModel>();
         	        ColumnModel columnDescriptor = new ColumnModel();
-                    columnDescriptor.setProperty("username");         
+                    columnDescriptor.setValue("username");         
                     columnDescriptor.setHeader("Username");        
                     columnDescriptor.setType("String");        
                     columns.add(columnDescriptor);
                     
                     columnDescriptor = new ColumnModel();
-                    columnDescriptor.setProperty("password");         
+                    columnDescriptor.setValue("password");         
                     columnDescriptor.setHeader("Password");        
                     columnDescriptor.setType("String");        
                     columns.add(columnDescriptor);
@@ -121,21 +137,22 @@ public class DataRecorderBean {
         		System.out.println("init car table start 1");
         		columns = new ArrayList<ColumnModel>();
     	        ColumnModel columnDescriptor = new ColumnModel();
-                columnDescriptor.setProperty("carNum");         
+                columnDescriptor.setValue("carNum");         
                 columnDescriptor.setHeader("CarNum");        
                 columnDescriptor.setType("String");        
                 columns.add(columnDescriptor);
                 
                 System.out.println("init car table start 2");
                 columnDescriptor = new ColumnModel();
-                columnDescriptor.setProperty("carOwner");         
+                columnDescriptor.setValue("carOwner");         
                 columnDescriptor.setHeader("CarOwner");        
                 columnDescriptor.setType("String");        
                 columns.add(columnDescriptor);
         		
                 System.out.println("init car table start 3");
                 columnDescriptor = new ColumnModel();
-                columnDescriptor.setProperty("priceMap");         
+                columnDescriptor.setKey("carNum");
+                columnDescriptor.setValue("priceMap");         
                 columnDescriptor.setHeader("PriceMap");        
                 columnDescriptor.setType("Map");        
                 columns.add(columnDescriptor);
@@ -241,6 +258,8 @@ public class DataRecorderBean {
 		return columns;
 	}
     
+    
+    
     public List<Object> getData() {
     	return data;
 //    	UserService service = new UserService();
@@ -286,4 +305,174 @@ public class DataRecorderBean {
         	System.out.println("DataList " + data.size());
         }
     }
+    
+    public void onMapCellEdit(CellEditEvent event) {
+    	
+//    	int alteredRow = event.getRowIndex();
+//    	int alteredCol = ((DynamicColumn)event.getColumn()).getIndex();
+//    	
+//    	System.out.println("onCellEdit " + alteredRow +  ", " + alteredCol);
+        Object oldValue = event.getOldValue();
+        Object newValue = event.getNewValue();
+        //System.out.println("Cell Changed" + " Old: " + oldValue + ", New:" + newValue);
+        if(newValue != null && !newValue.equals(oldValue)) {
+        	System.out.println("Cell Changed" + " Old: " + oldValue + ", New:" + newValue);
+            //FacesContext.getCurrentInstance().addMessage(null, msg);
+        	System.out.println("DataList " + data.size());
+        	for(int i=0; i< data.size(); i++) {
+        		Object dataObj = data.get(i);
+        		System.out.println(dataObj.toString());
+        	}
+        }
+    }
+
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	public List<Object> getSelectedCars() {
+        return selectedCars;
+    }
+ 
+    public void setSelectedCars(List<Object> aSelectedCars) {
+    	System.out.println("set selected cars");
+    	if(aSelectedCars != null) {
+    		for(int i=0; i<aSelectedCars.size();i++) {
+    			Object obj = aSelectedCars.get(i);
+    			System.out.println(obj.toString());
+    		}
+    	}
+        this.selectedCars = aSelectedCars;
+    }
+	
+	public Object getSelectedCar() {
+		return selectedCar;
+	}
+	public Object getSelectedCarKey() {
+		return selectedCarKey;
+	}
+	public void setSelectedCarKey(Object selectedCarKey) {
+		System.out.println("set selected carKey " + selectedCarKey);
+		this.selectedCarKey = selectedCarKey;
+	}
+	public void setSelectedCar(Object selectedCar) {
+		System.out.println("set selected car " + selectedCar.toString());
+		
+		selColumns = new ArrayList<ColumnModel>();
+        ColumnModel columnDescriptor = new ColumnModel();
+        columnDescriptor.setValue("model");         
+        columnDescriptor.setHeader("Model");        
+        columnDescriptor.setType("String");        
+        selColumns.add(columnDescriptor);
+        
+        columnDescriptor = new ColumnModel();
+        columnDescriptor.setValue("manuYear");         
+        columnDescriptor.setHeader("ManuYear");        
+        columnDescriptor.setType("String");        
+        selColumns.add(columnDescriptor);
+        
+        columnDescriptor = new ColumnModel();
+        columnDescriptor.setValue("price");         
+        columnDescriptor.setHeader("Price");        
+        columnDescriptor.setType("Long");        
+        selColumns.add(columnDescriptor);
+        
+		this.selectedCar = selectedCar;
+	}
+	
+	public List<ColumnModel> getSelColumns() {
+		return selColumns;
+	}
+	public void setSelColumns(List<ColumnModel> selColumns) {
+		this.selColumns = selColumns;
+	}
+	
+	public void login(ActionEvent event) {
+		System.out.println("username is " + username + ", password " + password);
+		if(selectedCar != null) {
+			System.out.println("selectedCar " + selectedCar.toString());
+		} else System.out.println("selectedCar is null");
+		
+		if(username != null && username.equals("admin") && password != null && password.equals("admin")) {
+            loggedIn = true;
+        } else {
+            loggedIn = false;
+        }
+
+		selColumns = new ArrayList<ColumnModel>();
+        ColumnModel columnDescriptor = new ColumnModel();
+        columnDescriptor.setValue("model");         
+        columnDescriptor.setHeader("Model");        
+        columnDescriptor.setType("String");        
+        selColumns.add(columnDescriptor);
+        
+        columnDescriptor = new ColumnModel();
+        columnDescriptor.setValue("manuYear");         
+        columnDescriptor.setHeader("ManuYear");        
+        columnDescriptor.setType("String");        
+        selColumns.add(columnDescriptor);
+        
+        columnDescriptor = new ColumnModel();
+        columnDescriptor.setValue("price");         
+        columnDescriptor.setHeader("Price");        
+        columnDescriptor.setType("Long");        
+        selColumns.add(columnDescriptor);
+         
+        PrimeFaces.current().ajax().addCallbackParam("loggedIn", loggedIn);
+	}
+    
+	public void buttonNewAction(ActionEvent actionEvent) {
+		Class obj;
+		try {
+			obj = Class.forName("com.mwi.aws.dynamodb.model.Car");
+			Field[] crunchifyFields = obj.getDeclaredFields();
+			
+			PodamFactory factory = new PodamFactoryImpl();
+
+			// This will use constructor with minimum arguments and
+			// then setters to populate POJO
+			Object car = factory.manufacturePojo(Car.class);
+			System.out.println("new car " + car.toString());
+			
+			for(int i=0; i< data.size(); i++) {
+	    		Object dataObj = data.get(i);
+	    		System.out.println(dataObj.toString());
+	    	}
+			
+			this.getData().add(car);
+			
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void buttonDeleteAction(ActionEvent actionEvent) {
+		System.out.println("delete selected cars " + selectedCars.size());
+    	if(selectedCars != null) {
+    		for(int i=0; i<selectedCars.size();i++) {
+    			Object obj = selectedCars.get(i);
+    			System.out.println(obj.toString());
+    			this.data.remove(obj);
+    		}
+    	}
+		
+		System.out.println("DataList " + data.size());
+    	for(int i=0; i< data.size(); i++) {
+    		Object dataObj = data.get(i);
+    		System.out.println(dataObj.toString());
+    	}
+	}
+    
+    
 }

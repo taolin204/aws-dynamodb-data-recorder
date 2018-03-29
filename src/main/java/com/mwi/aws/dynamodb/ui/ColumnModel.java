@@ -6,18 +6,34 @@ public class ColumnModel implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private String property;
+	private String key;
+	private String value;
 	private String header;
 	private String type;
 	
 	public ColumnModel() {}
 	
-	public String getProperty() {
-		return property;
+
+	public String getKey() {
+		return key;
 	}
-	public void setProperty(String property) {
-		this.property = property;
+
+
+	public void setKey(String key) {
+		this.key = key;
 	}
+
+
+	public String getValue() {
+		return value;
+	}
+
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+
 	public String getHeader() {
 		return header;
 	}

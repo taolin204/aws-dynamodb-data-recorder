@@ -6,6 +6,10 @@ public class Employee {
     private String phoneNumber;
     private String address;
 
+    public Object getKey() {
+		return id;
+	}
+    
     public long getId() {
         return id;
     }

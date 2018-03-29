@@ -5,6 +5,10 @@ public class User {
 	private String username;
 	private String password;
 	
+	public Object getKey() {
+		return username;
+	}
+	
 	public String getUsername() {
 		return username;
 	}
