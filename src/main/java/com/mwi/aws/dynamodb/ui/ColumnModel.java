@@ -2,6 +2,8 @@ package com.mwi.aws.dynamodb.ui;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
 public class ColumnModel implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -10,6 +12,7 @@ public class ColumnModel implements Serializable {
 	private String value;
 	private String header;
 	private String type;
+	private Long mapDataTypeId;
 	
 	public ColumnModel() {}
 	
@@ -48,4 +51,19 @@ public class ColumnModel implements Serializable {
 	public void setType(String type) {
 		this.type = type;
 	}
+	
+	public Long getMapDataTypeId() {
+		return mapDataTypeId;
+	}
+
+
+	public void setMapDataTypeId(Long mapDataTypeId) {
+		this.mapDataTypeId = mapDataTypeId;
+	}
+
+
+	@Override 
+    public String toString() { 
+            return ReflectionToStringBuilder.toString(this); 
+    }
 }

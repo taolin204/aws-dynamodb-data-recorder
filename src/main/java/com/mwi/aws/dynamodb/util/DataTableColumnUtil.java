@@ -3,7 +3,7 @@ package com.mwi.aws.dynamodb.util;
 import com.mwi.aws.dynamodb.ui.ColumnModel;
 import com.thoughtworks.xstream.XStream;
 
-public class DataColumnUtil {
+public class DataTableColumnUtil {
 
 	
 	public static void main(String[] args) {

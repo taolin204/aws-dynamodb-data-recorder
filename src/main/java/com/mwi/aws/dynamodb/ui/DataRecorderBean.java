@@ -11,9 +11,12 @@ import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;
 import org.primefaces.model.menu.MenuModel;
 
+import com.mwi.aws.dynamodb.datamanager.AwsDataTypeManager;
+import com.mwi.aws.dynamodb.model.AwsDataType;
 import com.mwi.aws.dynamodb.model.Car;
 import com.mwi.aws.dynamodb.model.Employee;
 import com.mwi.aws.dynamodb.service.CarService;
+import com.mwi.aws.dynamodb.service.OwnerConfigService;
 import com.mwi.aws.dynamodb.service.UserService;
 
 import uk.co.jemos.podam.api.PodamFactory;
@@ -33,241 +36,133 @@ import java.util.*;
 @ViewScoped
 public class DataRecorderBean {
 	
-	private List<ColumnModel> columns = new ArrayList<ColumnModel>(0);
-    private List<String> selectedColumns = new ArrayList<>();
-    private List<Employee> employeeList = new ArrayList<>();
-    private Map<String, String> columnMap = new LinkedHashMap<>();
-
-    private String text;
+    private MenuModel MenuModel;
     
-    private MenuModel model;
-    private List<Object> data;
-    
-    private String mapKey;
-    private Object selectedCar;
-    private Object selectedCarKey;
-    private List<Object> selectedCars;
-    
-    private String username;
-    private String password;
-    private boolean loggedIn;
-    private List<ColumnModel> selColumns = new ArrayList<ColumnModel>(0);
+    private AwsDataTypeManager dataTypeManager;
+   
+    private Long dataTypeId;
+    private AwsDataType tableDataType;
+    private List<Object> tableDatas;
+    private List<ColumnModel> tableDataColumns = new ArrayList<ColumnModel>(0);
+    private List<Object> selTableDatas;
     
     
-	//@ManagedProperty(value = "#{table}")
-    //private DataTable table;
-    private String tableTag = ":form:myTable";
+    private Long mapDataTypeId;
+    private AwsDataType tableMapDataType;
+    private Object selTableDataObj;
+    private Object selTableDataObjKey;
+    private List<ColumnModel> selTableDataMapColumns = new ArrayList<ColumnModel>(0);
     
-    public String getText() {
-        return text;
-    }
-    public void setText(String text) {
-        this.text = text;
-    }
-     
-    public void handleKeyEvent() {
-        if(text != null) {
-        	text = text.toUpperCase();
-        	if(text.equals("12")) {
-        		System.out.println("text " + text);
-        		initColumnProperties2();
-        		DataTable table = (DataTable) FacesContext.getCurrentInstance().getViewRoot().findComponent(tableTag);
-        		if(table != null) {
-        			
-        	        columns = new ArrayList<ColumnModel>();
-        	        ColumnModel columnDescriptor = new ColumnModel();
-                    columnDescriptor.setValue("username");         
-                    columnDescriptor.setHeader("Username");        
-                    columnDescriptor.setType("String");        
-                    columns.add(columnDescriptor);
-                    
-                    columnDescriptor = new ColumnModel();
-                    columnDescriptor.setValue("password");         
-                    columnDescriptor.setHeader("Password");        
-                    columnDescriptor.setType("String");        
-                    columns.add(columnDescriptor);
-                    
-                    model = new DefaultMenuModel();
-                    
-                    //First submenu
-                    DefaultSubMenu firstSubmenu = new DefaultSubMenu("Dynamic Submenu");
-                     
-                    DefaultMenuItem item = new DefaultMenuItem("External");
-                    item.setUrl("http://www.primefaces.org");
-                    item.setIcon("ui-icon-home");
-                    firstSubmenu.addElement(item);
-                     
-                    model.addElement(firstSubmenu);
-                     
-                    //Second submenu
-                    DefaultSubMenu secondSubmenu = new DefaultSubMenu("Dynamic Actions");
-             
-                    item = new DefaultMenuItem("Save");
-                    item.setIcon("ui-icon-disk");
-                    item.setCommand("#{dataRecorderBean.save}");
-                    //item.setUpdate("messages");
-                    secondSubmenu.addElement(item);
-                     
-             
-                    model.addElement(secondSubmenu);
-                    
-                    UserService service = new UserService();
-        			data = service.getUsers();
-//        			table.setValueExpression("sortBy", null);
-//	        		for(UIColumn column : table.getColumns()) {
-//	        			System.out.println(column.getColumnKey());
-//	        		}
-        		} else {
-        			System.out.println("not able to find table component by " + tableTag);
-        		}
-        		
-//        		UIComponent table = FacesContext.getCurrentInstance().getViewRoot().findComponent(tableTag);
-//        		if(table != null) {
-//        			System.out.println("table is not null");
-//        			//table.setValueExpression("sortBy", null);
-//        		} else {
-//        			System.out.println("not able to find table component by " + tableTag);
-//        		}
-        		
-        	} else if(text.equals("123")) {
-        		//System.out.println("text " + text);
-        		//initColumnProperties();
-        		initColumnProperties2();
-        		
-        		System.out.println("init car table start 1");
-        		columns = new ArrayList<ColumnModel>();
-    	        ColumnModel columnDescriptor = new ColumnModel();
-                columnDescriptor.setValue("carNum");         
-                columnDescriptor.setHeader("CarNum");        
-                columnDescriptor.setType("String");        
-                columns.add(columnDescriptor);
-                
-                System.out.println("init car table start 2");
-                columnDescriptor = new ColumnModel();
-                columnDescriptor.setValue("carOwner");         
-                columnDescriptor.setHeader("CarOwner");        
-                columnDescriptor.setType("String");        
-                columns.add(columnDescriptor);
-        		
-                System.out.println("init car table start 3");
-                columnDescriptor = new ColumnModel();
-                columnDescriptor.setKey("carNum");
-                columnDescriptor.setValue("priceMap");         
-                columnDescriptor.setHeader("PriceMap");        
-                columnDescriptor.setType("Map");        
-                columns.add(columnDescriptor);
-                
-                model = new DefaultMenuModel();
-                
-                //First submenu
-                DefaultSubMenu firstSubmenu = new DefaultSubMenu("Dynamic Submenu");
-                 
-                DefaultMenuItem item = new DefaultMenuItem("External");
-                item.setUrl("http://www.primefaces.org");
-                item.setIcon("ui-icon-home");
-                firstSubmenu.addElement(item);
-                 
-                model.addElement(firstSubmenu);
-                 
-                //Second submenu
-                DefaultSubMenu secondSubmenu = new DefaultSubMenu("Dynamic Actions");
-                
-                item = new DefaultMenuItem("Delete");
-                item.setIcon("ui-icon-close");
-                item.setCommand("#{dataRecorderBean.delete}");
-                item.setAjax(false);
-                secondSubmenu.addElement(item);
-                 
-                item = new DefaultMenuItem("Redirect");
-                item.setIcon("ui-icon-search");
-                item.setCommand("#{dataRecorderBean.redirect}");
-                secondSubmenu.addElement(item);
-                
-                model.addElement(secondSubmenu);
-                
-                System.out.println("init car table start 4");
-                CarService carService = new CarService();
-                data = carService.getCars();
-                
-                System.out.println("init car table end ");
-        	}
-        }
-    }
+    private List<Object> selTableDataMapObjs;
     
     @PostConstruct
     private void postConstruct() {
-        initColumnProperties();
-        initEmployeeList();
+    	initDataRecorderBean();
+    }
+    
+    public void initDataRecorderBean() {
+    	dataTypeManager = AwsDataTypeManager.getInstance();
+    	createRootMenu();
+    }
+    
+    public void createRootMenu() {
+    	
+    	MenuModel = new DefaultMenuModel();
         
-    }
-
-    private void initColumnProperties2() {
-    	selectedColumns = new ArrayList<>();
-    	columnMap = new LinkedHashMap<>();
-        addColumn("id", "ID");
-        addColumn("name", "Name");
-        addColumn("phoneNumber", "Phone Number");
-        selectedColumns.addAll(columnMap.keySet());
-    }
-    
-    private void initColumnProperties() {
-    	selectedColumns = new ArrayList<>();
-    	columnMap = new LinkedHashMap<>();
-        addColumn("id", "ID");
-        addColumn("name", "Name");
-        addColumn("phoneNumber", "Phone Number");
-        addColumn("address", "Address");
-        selectedColumns.addAll(columnMap.keySet());
-    }
-
-    private void addColumn(String propertyName, String displayName) {
-        columnMap.put(propertyName, displayName);
-    }
-
-    private void initEmployeeList() {
-        DataFactory dataFactory = new DataFactory();
-        for (int i = 1; i < 20; i++) {
-            Employee employee = new Employee();
-            employee.setId(i);
-            employee.setName(dataFactory.getName());
-            employee.setPhoneNumber(String.format("%s-%s-%s", dataFactory.getNumberText(3),
-                    dataFactory.getNumberText(3),
-                    dataFactory.getNumberText(4)));
-            employee.setAddress(dataFactory.getAddress() + "," + dataFactory.getCity());
-            employeeList.add(employee);
-        }
-    }
-
-    public List<Employee> getEmployeeList() {
-        return employeeList;
-    }
-
-    public List<String> getSelectedColumns() {
-        return selectedColumns;
-    }
-
-    public void setSelectedColumns(List<String> selectedColumns) {
-        this.selectedColumns = selectedColumns;
-    }
-
-    public Map<String, String> getColumnMap() {
-        return columnMap;
+        //First submenu
+        DefaultSubMenu firstSubmenu = new DefaultSubMenu("Customer");
+         
+        DefaultMenuItem item = new DefaultMenuItem("Customer");
+        item.setIcon("ui-icon-disk");
+        item.setCommand("#{dataRecorderBean.loadContactData}");
+        item.setValue("Customer");
+        item.setParam("Customer", "Customer");
+        item.setParam("dataTypeId", 1L);
+        item.setUpdate("myTable");
+        firstSubmenu.addElement(item);
+         
+        MenuModel.addElement(firstSubmenu);
+         
+        //Second submenu
+        DefaultSubMenu secondSubmenu = new DefaultSubMenu("Printers");
+ 
+        item = new DefaultMenuItem("Printer");
+        item.setIcon("ui-icon-disk");
+        item.setCommand("#{dataRecorderBean.save}");
+        //item.setUpdate("messages");
+        secondSubmenu.addElement(item);
+         
+ 
+        MenuModel.addElement(secondSubmenu);
     }
     
-    public List<ColumnModel> getColumns() {
-		return columns;
+    private void createCustomerMenu() {
+    	
+    }
+    
+    public void createPrinterMenu(List customerList) {
+    	if(customerList == null) {
+    		
+    	}
+    }
+    
+    
+    public void loadContactData() {
+    	FacesContext fc = FacesContext.getCurrentInstance();
+    	Map<String,String> params = fc.getExternalContext().getRequestParameterMap();
+    	for(String key : params.keySet()) {
+    		System.out.println("key " + key + ", value " + params.get(key));
+    	}
+    	
+    	dataTypeId =  Long.parseLong(params.get("dataTypeId"));
+    	if(dataTypeId != null) {
+    		tableDataType = dataTypeManager.getAwsDataMap().get(dataTypeId);
+	    	System.out.println("loadContactData : " + tableDataType);
+	    	
+	    	tableDatas = OwnerConfigService.getInstance().getOwnList();
+	    	tableDataColumns = tableDataType.getColumnModels();
+    	} else {
+    		System.out.println("dataTypeId is null");
+    	}
+    	
+    }
+    
+    public List<ColumnModel> getTableDataColumns() {
+		return tableDataColumns;
 	}
     
-    
-    
-    public List<Object> getData() {
-    	return data;
+    public void setTableDataColumns(List<ColumnModel> tableDataColumns) {
+		this.tableDataColumns = tableDataColumns;
+	}
+
+	public List<Object> getTableDatas() {
+    	return tableDatas;
 //    	UserService service = new UserService();
 //    	return service.getUsers();
     }
-    
-    public MenuModel getModel() {
-        return model;
+
+    public Long getDataTypeId() {
+		return dataTypeId;
+	}
+
+	public void setDataTypeId(Long dataTypeId) {
+		this.dataTypeId = dataTypeId;
+	}
+
+	public Long getMapDataTypeId() {
+		return mapDataTypeId;
+	}
+
+	public void setMapDataTypeId(Long mapDataTypeId) {
+		System.out.println("mapDataTypeId " + mapDataTypeId);
+		this.mapDataTypeId = mapDataTypeId;
+		if(mapDataTypeId != null) {
+			tableMapDataType = dataTypeManager.getAwsDataMap().get(dataTypeId);
+		}
+	}
+
+	public MenuModel getMenuModel() {
+        return MenuModel;
     }   
      
     public void save() {
@@ -302,11 +197,11 @@ public class DataRecorderBean {
         if(newValue != null && !newValue.equals(oldValue)) {
         	System.out.println("Cell Changed" + " Old: " + oldValue + ", New:" + newValue);
             //FacesContext.getCurrentInstance().addMessage(null, msg);
-        	System.out.println("DataList " + data.size());
+        	System.out.println("DataList " + tableDatas.size());
         }
     }
     
-    public void onMapCellEdit(CellEditEvent event) {
+    public void onMapDataCellEdit(CellEditEvent event) {
     	
 //    	int alteredRow = event.getRowIndex();
 //    	int alteredCol = ((DynamicColumn)event.getColumn()).getIndex();
@@ -318,139 +213,92 @@ public class DataRecorderBean {
         if(newValue != null && !newValue.equals(oldValue)) {
         	System.out.println("Cell Changed" + " Old: " + oldValue + ", New:" + newValue);
             //FacesContext.getCurrentInstance().addMessage(null, msg);
-        	System.out.println("DataList " + data.size());
-        	for(int i=0; i< data.size(); i++) {
-        		Object dataObj = data.get(i);
+        	System.out.println("DataList " + tableDatas.size());
+        	for(int i=0; i< tableDatas.size(); i++) {
+        		Object dataObj = tableDatas.get(i);
         		System.out.println(dataObj.toString());
         	}
         }
     }
 
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
-	public List<Object> getSelectedCars() {
-        return selectedCars;
+    public List<Object> getSelTableDatas() {
+        return selTableDatas;
     }
  
-    public void setSelectedCars(List<Object> aSelectedCars) {
-    	System.out.println("set selected cars");
+    public void setSelTableDatas(List<Object> aSelectedCars) {
+    	System.out.println("setSelectedTableDatas ");
     	if(aSelectedCars != null) {
     		for(int i=0; i<aSelectedCars.size();i++) {
     			Object obj = aSelectedCars.get(i);
     			System.out.println(obj.toString());
     		}
     	}
-        this.selectedCars = aSelectedCars;
+        this.selTableDatas = aSelectedCars;
     }
 	
-	public Object getSelectedCar() {
-		return selectedCar;
-	}
-	public Object getSelectedCarKey() {
-		return selectedCarKey;
-	}
-	public void setSelectedCarKey(Object selectedCarKey) {
-		System.out.println("set selected carKey " + selectedCarKey);
-		this.selectedCarKey = selectedCarKey;
-	}
-	public void setSelectedCar(Object selectedCar) {
-		System.out.println("set selected car " + selectedCar.toString());
-		
-		selColumns = new ArrayList<ColumnModel>();
-        ColumnModel columnDescriptor = new ColumnModel();
-        columnDescriptor.setValue("model");         
-        columnDescriptor.setHeader("Model");        
-        columnDescriptor.setType("String");        
-        selColumns.add(columnDescriptor);
-        
-        columnDescriptor = new ColumnModel();
-        columnDescriptor.setValue("manuYear");         
-        columnDescriptor.setHeader("ManuYear");        
-        columnDescriptor.setType("String");        
-        selColumns.add(columnDescriptor);
-        
-        columnDescriptor = new ColumnModel();
-        columnDescriptor.setValue("price");         
-        columnDescriptor.setHeader("Price");        
-        columnDescriptor.setType("Long");        
-        selColumns.add(columnDescriptor);
-        
-		this.selectedCar = selectedCar;
+	public Object getSelTableDataObj() {
+		return selTableDataObj;
 	}
 	
-	public List<ColumnModel> getSelColumns() {
-		return selColumns;
-	}
-	public void setSelColumns(List<ColumnModel> selColumns) {
-		this.selColumns = selColumns;
+	public void setSelTableDataObj(Object selObj) {
+		System.out.println("setSelTableDataObj " + selObj.toString());
+		if(mapDataTypeId != null) {
+			AwsDataType awsDataType = dataTypeManager.getAwsDataMap().get(mapDataTypeId);
+			
+			this.selTableDataMapColumns = awsDataType.getColumnModels();
+			this.selTableDataObj = selObj;
+		} else {
+			System.out.println("mapDataTypeId is null");
+		}
 	}
 	
-	public void login(ActionEvent event) {
-		System.out.println("username is " + username + ", password " + password);
-		if(selectedCar != null) {
-			System.out.println("selectedCar " + selectedCar.toString());
-		} else System.out.println("selectedCar is null");
-		
-		if(username != null && username.equals("admin") && password != null && password.equals("admin")) {
-            loggedIn = true;
-        } else {
-            loggedIn = false;
-        }
-
-		selColumns = new ArrayList<ColumnModel>();
-        ColumnModel columnDescriptor = new ColumnModel();
-        columnDescriptor.setValue("model");         
-        columnDescriptor.setHeader("Model");        
-        columnDescriptor.setType("String");        
-        selColumns.add(columnDescriptor);
-        
-        columnDescriptor = new ColumnModel();
-        columnDescriptor.setValue("manuYear");         
-        columnDescriptor.setHeader("ManuYear");        
-        columnDescriptor.setType("String");        
-        selColumns.add(columnDescriptor);
-        
-        columnDescriptor = new ColumnModel();
-        columnDescriptor.setValue("price");         
-        columnDescriptor.setHeader("Price");        
-        columnDescriptor.setType("Long");        
-        selColumns.add(columnDescriptor);
-         
-        PrimeFaces.current().ajax().addCallbackParam("loggedIn", loggedIn);
+	
+	public Object getSelTableDataObjKey() {
+		return selTableDataObjKey;
+	}
+	public void setSelTableDataObjKey(Object aSelectedKey) {
+		System.out.println("setSelTableDataObjKey " + aSelectedKey);
+		this.selTableDataObjKey = aSelectedKey;
+	}
+	
+	
+	public List<ColumnModel> getSelTableDataMapColumns() {
+		return selTableDataMapColumns;
+	}
+	public void setSelTableDataMapColumns(List<ColumnModel> selColumns) {
+		this.selTableDataMapColumns = selColumns;
+	}
+	
+	public List<Object> getSelTableDataMapObjs() {
+		return selTableDataMapObjs;
+	}
+	public void setSelTableDataMapObjs(List<Object> selectedMapObjs) {
+		this.selTableDataMapObjs = selectedMapObjs;
 	}
     
 	public void buttonNewAction(ActionEvent actionEvent) {
-		Class obj;
+		Object obj;
 		try {
-			obj = Class.forName("com.mwi.aws.dynamodb.model.Car");
-			Field[] crunchifyFields = obj.getDeclaredFields();
+			
+			String className = tableDataType.getDataClass();
+			obj = Class.forName(className).newInstance();
 			
 			PodamFactory factory = new PodamFactoryImpl();
 
 			// This will use constructor with minimum arguments and
 			// then setters to populate POJO
-			Object car = factory.manufacturePojo(Car.class);
-			System.out.println("new car " + car.toString());
+			factory.populatePojo(obj);
+			System.out.println("new car " + obj.toString());
 			
-			for(int i=0; i< data.size(); i++) {
-	    		Object dataObj = data.get(i);
-	    		System.out.println(dataObj.toString());
-	    	}
-			
-			this.getData().add(car);
+			this.getTableDatas().add(obj);
 			
 		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -458,21 +306,70 @@ public class DataRecorderBean {
 	}
 	
 	public void buttonDeleteAction(ActionEvent actionEvent) {
-		System.out.println("delete selected cars " + selectedCars.size());
-    	if(selectedCars != null) {
-    		for(int i=0; i<selectedCars.size();i++) {
-    			Object obj = selectedCars.get(i);
-    			System.out.println(obj.toString());
-    			this.data.remove(obj);
+//		System.out.println("delete selected cars " + selTableDatas.size());
+    	if(selTableDatas != null) {
+    		for(int i=0; i<selTableDatas.size();i++) {
+    			Object obj = selTableDatas.get(i);
+//    			System.out.println(obj.toString());
+    			this.tableDatas.remove(obj);
     		}
     	}
 		
-		System.out.println("DataList " + data.size());
-    	for(int i=0; i< data.size(); i++) {
-    		Object dataObj = data.get(i);
+//		System.out.println("DataList " + tableDatas.size());
+//    	for(int i=0; i< tableDatas.size(); i++) {
+//    		Object dataObj = tableDatas.get(i);
+//    		System.out.println(dataObj.toString());
+//    	}
+	}
+    
+	
+	public void buttonNewMapObjAction(ActionEvent actionEvent) {
+		
+		
+		Object obj;
+		try {
+			
+			String className = tableMapDataType.getDataClass();
+			obj = Class.forName(className).newInstance();
+			
+			PodamFactory factory = new PodamFactoryImpl();
+
+			// This will use constructor with minimum arguments and
+			// then setters to populate POJO
+			factory.populatePojo(obj);
+			System.out.println("new map object : " + obj.toString());
+			
+			//this.getTableDatas().add(obj);
+			
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void buttonDeleteMapObjAction(ActionEvent actionEvent) {
+		System.out.println("delete selected cars " + selTableDatas.size());
+    	if(selTableDatas != null) {
+    		for(int i=0; i<selTableDatas.size();i++) {
+    			Object obj = selTableDatas.get(i);
+    			System.out.println(obj.toString());
+    			this.tableDatas.remove(obj);
+    		}
+    	}
+		
+		System.out.println("DataList " + tableDatas.size());
+    	for(int i=0; i< tableDatas.size(); i++) {
+    		Object dataObj = tableDatas.get(i);
     		System.out.println(dataObj.toString());
     	}
 	}
-    
+	
     
 }

@@ -20,34 +20,14 @@
     <h2>Primefaces Dynamic DataTable example</h2>
     <h:form id="form">
 	    <p:layout id="myPage" fullPage="true">
-	    
-			<p:layoutUnit position="north" size="100" header="Top" resizable="true" closable="true" collapsible="true">
-	            <p:toolbar>
-            		<f:facet name="left">
-            			<p:commandButton type="button" value="New" icon="ui-icon-document" />
-            		</f:facet>
-            	</p:toolbar>
+    
+	    	<p:layoutUnit position="west" size="300" header="DataType" collapsible="true" footer="DataType" gutter="1" effect="drop">
+	            <p:menu id="myMenu" model="#{dataRecorderBean.menuModel}"/>
 	        </p:layoutUnit>
 	        
-	 		<p:layoutUnit position="south" size="100" header="Bottom" resizable="true" closable="true" collapsible="true">
-	            <h:outputText value="底部区域" />
-	        </p:layoutUnit>
-	        
-	    	<p:layoutUnit position="west" size="300" header="左部" collapsible="true" footer="左底" gutter="1" effect="drop">
-	            <p:menu id="myMenu" model="#{dataRecorderBean.model}"/>
-	        </p:layoutUnit>
-	        
-	        <p:layoutUnit position="center" closable="true" collapsible="true" header="Contents">
+	        <p:layoutUnit position="center" closable="true" collapsible="true" header="Data Table">
 		    
-		    	<h:panelGrid columns="3">
-			        <h:outputText value="Keyup: " />
-			        <p:inputText id="counter" value="#{dataRecorderBean.text}">
-			            <p:ajax event="keyup" update="myMenu myTable" listener="#{dataRecorderBean.handleKeyEvent}" />
-			        </p:inputText>
-			        <h:outputText id="out" value="#{dataRecorderBean.text}" />
-			    </h:panelGrid>
-		    
-				<p:dataTable id="myTable" var="obj" value="#{dataRecorderBean.data}"  selection="#{dataRecorderBean.selectedCars}" rowKey="#{obj.key}" editable="true" editMode="cell" widgetVar="cellDatas">
+				<p:dataTable id="myTable" var="tableData" value="#{dataRecorderBean.tableDatas}" selection="#{dataRecorderBean.selTableDatas}" rowKey="#{tableData.key}" editable="true" editMode="cell" widgetVar="cellDatas">
 				
 					<f:facet name="header">
 			            <p:commandButton process="myTable" update=":form:myTable" icon="ui-icon-search" value="New" actionListener="#{dataRecorderBean.buttonNewAction}"/>
@@ -56,25 +36,25 @@
 			        </f:facet>
 			        
 					<p:ajax event="cellEdit" listener="#{dataRecorderBean.onCellEdit}"  />
-					
 					<p:column selectionMode="multiple" style="width:16px;text-align:center"/>
 					
-					<c:forEach items="#{dataRecorderBean.columns}" var="column" varStatus="colLoopStatus">
+					<c:forEach items="#{dataRecorderBean.tableDataColumns}" var="column" varStatus="colLoopStatus">
 			            <p:column headerText="#{column.type}">
 			            	<c:choose>
 			            		<c:when test="#{column.type eq 'Map'}">
-			            			<p:commandButton update=":form:carDetail" oncomplete="PF('dlg').show()" value="#{obj[column.value].keySet().toString()}" title="View">
-						                <f:setPropertyActionListener value="#{obj[column.value]}" target="#{dataRecorderBean.selectedCar}" />
-						                <f:setPropertyActionListener value="#{obj[column.key]}" target="#{dataRecorderBean.selectedCarKey}" />
+			            			<p:commandButton update=":form:mapDataDetail" oncomplete="PF('dlg').show()" value="#{tableData[column.value].keySet().toString()}" title="View">
+						                <f:setPropertyActionListener value="#{column.mapDataTypeId}" target="#{dataRecorderBean.mapDataTypeId}" />
+						                <f:setPropertyActionListener value="#{tableData[column.value]}" target="#{dataRecorderBean.selTableDataObj}" />
+										<f:setPropertyActionListener value="#{tableData[column.key]}" target="#{dataRecorderBean.selTableDataObjKey}" />
 						            </p:commandButton>
 			            		</c:when>
 			            		<c:otherwise>
 					               	<p:cellEditor>
 					                  <f:facet name="output">
-					                     <h:outputText value="#{obj[column.value]}" />
+					                     <h:outputText value="#{tableData[column.value]}" />
 					                  </f:facet>
 					                  <f:facet name="input">
-					                     <p:inputText value="#{obj[column.value]}"  />
+					                     <p:inputText value="#{tableData[column.value]}"  />
 					                  </f:facet>
 					               	</p:cellEditor>   
 				               	</c:otherwise>
@@ -84,13 +64,22 @@
        				
 			    </p:dataTable>
 			    
-			    <p:dialog header="Selected Cars" widgetVar="dlg" resizable="false">
-			        <p:outputPanel id="carDetail" style="text-align:center;">
-			            <p:dataTable id="detailTable" var="selected" value="#{dataRecorderBean.selectedCar.values()}"  editable="true" editMode="cell" widgetVar="cellData">
+			    <p:dialog header="Update Data : #{dataRecorderBean.selTableDataObjKey}" widgetVar="dlg" resizable="false">
+			        <p:outputPanel id="mapDataDetail" style="text-align:center;">
+			            <p:dataTable id="detailTable" var="selected" value="#{dataRecorderBean.selTableDataObj.values()}"  selection="#{dataRecorderBean.selTableDataMapObjs}"  rowKey="#{selected.key}"  editable="true" editMode="cell" widgetVar="cellData">
 			            	
-			            	<p:ajax event="cellEdit" listener="#{dataRecorderBean.onMapCellEdit}"  />
+			            	<f:facet name="header">
+			            		<h:outputText value="selected data key : #{dataRecorderBean.selTableDataObjKey}" />
+			            		<h:outputText value=" " />
+					            <p:commandButton process="detailTable" update=":form:detailTable" icon="ui-icon-search" value="New" actionListener="#{dataRecorderBean.buttonNewMapObjAction}"/>
+					            <p:commandButton process="detailTable" update=":form:multiCarDetail" icon="ui-icon-search" value="View" oncomplete="PF('multiCarDialog').show()" />
+					            <p:commandButton process="detailTable" update=":form:detailTable" icon="ui-icon-search" value="Delete" actionListener="#{dataRecorderBean.buttonDeleteMapObjAction}" />
+					        </f:facet>
+			        
+			            	<p:ajax event="cellEdit" listener="#{dataRecorderBean.onMapDataCellEdit}"  />
+			            	<p:column selectionMode="multiple" style="width:16px;text-align:center"/>
 			            	
-			            	<c:forEach items="#{dataRecorderBean.selColumns}" var="selColumn" varStatus="colLoopStatus">
+			            	<c:forEach items="#{dataRecorderBean.selTableDataMapColumns}" var="selColumn" varStatus="colLoopStatus">
 					            <p:column headerText="#{selColumn.type}">
 					            	<p:cellEditor>
 					                  <f:facet name="output">
@@ -108,7 +97,7 @@
     			
     			<p:dialog header="Selected Cars" widgetVar="multiCarDialog" showEffect="fade" hideEffect="fade" resizable="false" width="220">
 			        <p:outputPanel id="multiCarDetail" style="text-align:center;">
-			            <ui:repeat value="#{dataRecorderBean.selectedCars}" var="car">
+			            <ui:repeat value="#{dataRecorderBean.selTableDatas}" var="car">
 			                <h:outputText value="#{car.toString()}" style="display:block"/>
 			            </ui:repeat>
 			        </p:outputPanel>
