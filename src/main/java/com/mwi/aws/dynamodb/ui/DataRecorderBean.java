@@ -1,7 +1,6 @@
 package com.mwi.aws.dynamodb.ui;
 
 import org.fluttercode.datafactory.impl.DataFactory;
-import org.primefaces.PrimeFaces;
 import org.primefaces.component.api.DynamicColumn;
 import org.primefaces.component.api.UIColumn;
 import org.primefaces.component.datatable.DataTable;
@@ -12,12 +11,9 @@ import org.primefaces.model.menu.DefaultSubMenu;
 import org.primefaces.model.menu.MenuModel;
 
 import com.mwi.aws.dynamodb.datamanager.AwsDataTypeManager;
+import com.mwi.aws.dynamodb.model.AwsDataInterface;
 import com.mwi.aws.dynamodb.model.AwsDataType;
-import com.mwi.aws.dynamodb.model.Car;
-import com.mwi.aws.dynamodb.model.Employee;
-import com.mwi.aws.dynamodb.service.CarService;
 import com.mwi.aws.dynamodb.service.OwnerConfigService;
-import com.mwi.aws.dynamodb.service.UserService;
 
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
@@ -49,7 +45,7 @@ public class DataRecorderBean {
     
     private Long mapDataTypeId;
     private AwsDataType tableMapDataType;
-    private Object selTableDataObj;
+    private Map selTableDataObj;
     private Object selTableDataObjKey;
     private List<ColumnModel> selTableDataMapColumns = new ArrayList<ColumnModel>(0);
     
@@ -153,11 +149,11 @@ public class DataRecorderBean {
 		return mapDataTypeId;
 	}
 
-	public void setMapDataTypeId(Long mapDataTypeId) {
-		System.out.println("mapDataTypeId " + mapDataTypeId);
-		this.mapDataTypeId = mapDataTypeId;
+	public void setMapDataTypeId(Long aMapDataTypeId) {
+		System.out.println("setMapDataTypeId mapDataTypeId " + aMapDataTypeId);
+		mapDataTypeId = aMapDataTypeId;
 		if(mapDataTypeId != null) {
-			tableMapDataType = dataTypeManager.getAwsDataMap().get(dataTypeId);
+			tableMapDataType = dataTypeManager.getAwsDataMap().get(mapDataTypeId);
 		}
 	}
 
@@ -165,14 +161,14 @@ public class DataRecorderBean {
         return MenuModel;
     }   
      
-    public void save() {
+    public void buttonSaveAction() {
         //addMessage("Success", "Data saved");
-    	System.out.println("Data saved");
+    	System.out.println("develop service to save current table object");
     }
      
-    public void update() {
+    public void save() {
         //addMessage("Success", "Data updated");
-    	System.out.println("Data updated");
+    	System.out.println("Data saved");
     }
      
     public void delete() {
@@ -236,11 +232,11 @@ public class DataRecorderBean {
         this.selTableDatas = aSelectedCars;
     }
 	
-	public Object getSelTableDataObj() {
+	public Map getSelTableDataObj() {
 		return selTableDataObj;
 	}
 	
-	public void setSelTableDataObj(Object selObj) {
+	public void setSelTableDataObj(Map selObj) {
 		System.out.println("setSelTableDataObj " + selObj.toString());
 		if(mapDataTypeId != null) {
 			AwsDataType awsDataType = dataTypeManager.getAwsDataMap().get(mapDataTypeId);
@@ -326,11 +322,11 @@ public class DataRecorderBean {
 	public void buttonNewMapObjAction(ActionEvent actionEvent) {
 		
 		
-		Object obj;
+		AwsDataInterface obj;
 		try {
 			
 			String className = tableMapDataType.getDataClass();
-			obj = Class.forName(className).newInstance();
+			obj = (AwsDataInterface) Class.forName(className).newInstance();
 			
 			PodamFactory factory = new PodamFactoryImpl();
 
@@ -339,7 +335,7 @@ public class DataRecorderBean {
 			factory.populatePojo(obj);
 			System.out.println("new map object : " + obj.toString());
 			
-			//this.getTableDatas().add(obj);
+			this.getSelTableDataObj().put(obj.getKey(), obj);
 			
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -355,19 +351,26 @@ public class DataRecorderBean {
 	}
 	
 	public void buttonDeleteMapObjAction(ActionEvent actionEvent) {
-		System.out.println("delete selected cars " + selTableDatas.size());
-    	if(selTableDatas != null) {
-    		for(int i=0; i<selTableDatas.size();i++) {
-    			Object obj = selTableDatas.get(i);
+		System.out.println("delete selected cars " + selTableDataMapObjs.size());
+    	if(selTableDataMapObjs != null) {
+    		for(int i=0; i<selTableDataMapObjs.size();i++) {
+    			AwsDataInterface obj = (AwsDataInterface) selTableDataMapObjs.get(i);
     			System.out.println(obj.toString());
-    			this.tableDatas.remove(obj);
+    			if(selTableDataObj.containsKey(obj.getKey())) {
+    				System.out.println("object key is in the map, remove the object.");
+    				this.selTableDataObj.remove(obj.getKey());
+    			} else {
+    				System.out.println("===== object key not in the map."); 
+    			}
+    			
     		}
     	}
 		
-		System.out.println("DataList " + tableDatas.size());
-    	for(int i=0; i< tableDatas.size(); i++) {
-    		Object dataObj = tableDatas.get(i);
-    		System.out.println(dataObj.toString());
+		System.out.println("selTableDataObj " + selTableDataObj.size());
+    	Iterator itr = selTableDataObj.values().iterator();
+    	while(itr.hasNext()) {
+    		AwsDataInterface obj = (AwsDataInterface) itr.next();
+    		System.out.println(obj.toString());
     	}
 	}
 	

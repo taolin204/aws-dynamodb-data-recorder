@@ -20,7 +20,7 @@ import com.mwi.aws.dynamodb.util.DynamoDBCustomUtils;
  * Representation of an item from the Dynamo DB table userGroup
  */
 @DynamoDBTable(tableName = OwnerConfig.DB_TABLE_NAME)
-public class OwnerConfig {
+public class OwnerConfig implements AwsDataInterface{
     //DYNAMO DB TABLE NAME
     public static final String DB_TABLE_NAME = "ownerConfiguration";
 
@@ -36,7 +36,7 @@ public class OwnerConfig {
     /** Address of the owner. */
     private String address;
     
-    
+    @Override
     public Object getKey() {
     	return owner;
     }

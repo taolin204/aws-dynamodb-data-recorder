@@ -18,7 +18,7 @@ import com.mwi.aws.dynamodb.util.DynamoDBCustomUtils;
  * Representation of a contact.
  */
 @DynamoDBDocument
-public class Contact {
+public class Contact implements AwsDataInterface{
     //DYNAMO DB ATTRIBUTE NAMES
     public static final String DB_ATTR_CONTACT_NAME = "contactName";
     public static final String DB_ATTR_EMAIL = "email"; 
@@ -40,6 +40,7 @@ public class Contact {
         return DynamoDBCustomUtils.toJSON(this);
     }
     
+    @Override
     public Object getKey() {
     	return contactName;
     }

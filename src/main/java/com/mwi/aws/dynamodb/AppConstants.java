@@ -24,6 +24,6 @@ public class AppConstants {
     public static final String ALERT_ERROR = "error";
 
     //application properties file.
-    public static final String APP_PROPERTIES_FILE = "G:\\svn\\TASS-POC\\trunk\\Development\\TassWebClient\\run\\resourcecs\\application.properties";
+    public static final String DATA_TYPE_FILE = "AwsDataStore.xml";
 
 }
