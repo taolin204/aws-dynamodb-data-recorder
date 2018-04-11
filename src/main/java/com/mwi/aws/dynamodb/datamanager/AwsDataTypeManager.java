@@ -36,7 +36,7 @@ public class AwsDataTypeManager {
 		
 //		AwsDataType awsDataType = new AwsDataType();
 //		awsDataType.setDataTypeId(1L);
-//		awsDataType.setDataClass("com.mwi.aws.dynamodb.model.OwnerConfig");
+//		awsDataType.setDataClass("com.mfg.OwnerConfig");
 //		
 //		List columns = new ArrayList<ColumnModel>();		
 //        ColumnModel columnDescriptor = new ColumnModel();
@@ -69,7 +69,7 @@ public class AwsDataTypeManager {
 //        //code to generate contact class xml definition.
 //        awsDataType = new AwsDataType();
 //		awsDataType.setDataTypeId(2L);
-//		awsDataType.setDataClass("com.mwi.aws.dynamodb.model.Contact");
+//		awsDataType.setDataClass("com.mfg.Contact");
 //		
 //		columns = new ArrayList<ColumnModel>();
 //		
@@ -95,6 +95,8 @@ public class AwsDataTypeManager {
 //        columns.add(columnDescriptor);
 //        
 //        awsDataType.setColumnModels(columns);
+//        awsDataMap.put(awsDataType.getDataTypeId(), awsDataType);
+        
 		
 		try {
 			
@@ -107,12 +109,15 @@ public class AwsDataTypeManager {
 			xstream.alias("AwsData", AwsDataType.class);
 			xstream.alias("Column", ColumnModel.class);
 			
+//			String xml = xstream.toXML(awsDataMap);
+//			System.out.println(xml);
+			
 			//Object obj = Class.forName("com.mwi.aws.dynamodb.model.AwsDataType").newInstance();
 			AwsDataTypeStore data = new AwsDataTypeStore(); 
 			InputStream in = this.getClass().getResourceAsStream("/" + AppConstants.DATA_TYPE_FILE);
 
 			xstream.fromXML(in, data);
-			System.out.println("===================================");
+			System.out.println("===================================1");
 			for(int i=0; i<data.getAwsDataTypes().size(); i++) {
 				AwsDataType data1= data.getAwsDataTypes().get(i);
 				System.out.println(data1.toString());
@@ -133,5 +138,7 @@ public class AwsDataTypeManager {
 	}
 	
 	
-	
+	public static void main(String[] args) {
+		AwsDataTypeManager.getInstance();
+	}
 }

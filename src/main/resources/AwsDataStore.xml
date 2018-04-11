@@ -2,7 +2,7 @@
   <awsDataTypes>
     <AwsData>
       <dataTypeId>1</dataTypeId>
-      <dataClass>com.mwi.aws.dynamodb.model.OwnerConfig</dataClass>
+      <dataClass>com.mfg.OwnerConfig</dataClass>
       <columnModels>
         <Column>
           <key></key>
@@ -27,7 +27,7 @@
     </AwsData>
     <AwsData>
       <dataTypeId>2</dataTypeId>
-      <dataClass>com.mwi.aws.dynamodb.model.Contact</dataClass>
+      <dataClass>com.mfg.Contact</dataClass>
       <columnModels>
         <Column>
           <key></key>
@@ -46,6 +46,132 @@
           <value>phoneNumber</value>
           <header>PhoneNumber</header>
           <type>String</type>
+        </Column>
+      </columnModels>
+    </AwsData>
+    <AwsData>
+      <dataTypeId>3</dataTypeId>
+      <dataClass>com.mfg.SensorConfig</dataClass>
+      <columnModels>
+        <Column>
+          <key></key>
+          <value>sensorId</value>
+          <header>SensorId</header>
+          <type>String</type>
+        </Column>
+        <Column>
+          <key></key>
+          <value>address</value>
+          <header>Address</header>
+          <type>String</type>
+        </Column>
+        <Column>
+          <key></key>
+          <value>alias</value>
+          <header>Alias</header>
+          <type>String</type>
+        </Column>
+        <Column>
+          <key></key>
+          <value>alias</value>
+          <header>Alias</header>
+          <type>String</type>
+        </Column>
+        <Column>
+          <key></key>
+          <value>enablePoll</value>
+          <header>EnablePoll</header>
+          <type>Boolean</type>
+        </Column>
+        <Column>
+          <key></key>
+          <value>installationDate</value>
+          <header>InstallationDate</header>
+          <type>String</type>
+        </Column>
+        <Column>
+          <key></key>
+          <value>installedBy</value>
+          <header>InstalledBy</header>
+          <type>String</type>
+        </Column>
+        <Column>
+          <key></key>
+          <value>location</value>
+          <header>Location</header>
+          <type>String</type>
+        </Column>
+        <Column>
+          <key></key>
+          <value>maintContract</value>
+          <header>MaintContract</header>
+          <type>String</type>
+        </Column>
+        <Column>
+          <key></key>
+          <value>maintStartDate</value>
+          <header>MaintStartDate</header>
+          <type>String</type>
+        </Column>
+        <Column>
+          <key></key>
+          <value>maintEndDate</value>
+          <header>MaintEndDate</header>
+          <type>String</type>
+        </Column>
+        <Column>
+          <key></key>
+          <value>manufacturer</value>
+          <header>Manufacturer</header>
+          <type>String</type>
+        </Column>
+        <Column>
+          <key></key>
+          <value>model</value>
+          <header>Model</header>
+          <type>String</type>
+        </Column>
+        <Column>
+          <key></key>
+          <value>owner</value>
+          <header>Owner</header>
+          <type>String</type>
+        </Column>
+        <Column>
+          <key></key>
+          <value>pollInterval</value>
+          <header>PollInterval</header>
+          <type>Long</type>
+        </Column>
+        <Column>
+          <key></key>
+          <value>serialNumber</value>
+          <header>SerialNumber</header>
+          <type>String</type>
+        </Column>
+        <Column>
+          <key></key>
+          <value>softwareInstalled</value>
+          <header>SoftwareInstalled</header>
+          <type>String</type>
+        </Column>
+        <Column>
+          <key></key>
+          <value>softwareLicense</value>
+          <header>SoftwareLicense</header>
+          <type>String</type>
+        </Column>
+        <Column>
+          <key></key>
+          <value>type</value>
+          <header>Type</header>
+          <type>String</type>
+        </Column>
+        <Column>
+          <key></key>
+          <value>contactNames</value>
+          <header>ContactNames</header>
+          <type>ListString</type>
         </Column>
       </columnModels>
     </AwsData>

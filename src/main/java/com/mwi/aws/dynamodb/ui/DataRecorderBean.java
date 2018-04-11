@@ -4,16 +4,19 @@ import org.fluttercode.datafactory.impl.DataFactory;
 import org.primefaces.component.api.DynamicColumn;
 import org.primefaces.component.api.UIColumn;
 import org.primefaces.component.datatable.DataTable;
+import org.primefaces.context.PrimeFacesContext;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;
 import org.primefaces.model.menu.MenuModel;
 
+import com.mfg.AwsDataInterface;
 import com.mwi.aws.dynamodb.datamanager.AwsDataTypeManager;
-import com.mwi.aws.dynamodb.model.AwsDataInterface;
 import com.mwi.aws.dynamodb.model.AwsDataType;
+import com.mwi.aws.dynamodb.service.AwsService;
 import com.mwi.aws.dynamodb.service.OwnerConfigService;
+import com.mwi.aws.dynamodb.util.DebugUtil;
 
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
@@ -32,9 +35,12 @@ import java.util.*;
 @ViewScoped
 public class DataRecorderBean {
 	
+	
+	private AwsDataTypeManager dataTypeManager;
+	private AwsService service;
     private MenuModel MenuModel;
     
-    private AwsDataTypeManager dataTypeManager;
+    
    
     private Long dataTypeId;
     private AwsDataType tableDataType;
@@ -42,14 +48,17 @@ public class DataRecorderBean {
     private List<ColumnModel> tableDataColumns = new ArrayList<ColumnModel>(0);
     private List<Object> selTableDatas;
     
-    
     private Long mapDataTypeId;
     private AwsDataType tableMapDataType;
-    private Map selTableDataObj;
+    private Map selTableMapDataObj;
     private Object selTableDataObjKey;
     private List<ColumnModel> selTableDataMapColumns = new ArrayList<ColumnModel>(0);
     
-    private List<Object> selTableDataMapObjs;
+    private List<Object> selDialogMapObjs;
+    
+    private String[] selTableListDataObj;
+    
+    private String menuSensor;
     
     @PostConstruct
     private void postConstruct() {
@@ -58,6 +67,7 @@ public class DataRecorderBean {
     
     public void initDataRecorderBean() {
     	dataTypeManager = AwsDataTypeManager.getInstance();
+    	service  = AwsService.getInstance();
     	createRootMenu();
     }
     
@@ -70,7 +80,7 @@ public class DataRecorderBean {
          
         DefaultMenuItem item = new DefaultMenuItem("Customer");
         item.setIcon("ui-icon-disk");
-        item.setCommand("#{dataRecorderBean.loadContactData}");
+        item.setCommand("#{dataRecorderBean.loadOwnerData}");
         item.setValue("Customer");
         item.setParam("Customer", "Customer");
         item.setParam("dataTypeId", 1L);
@@ -81,15 +91,25 @@ public class DataRecorderBean {
          
         //Second submenu
         DefaultSubMenu secondSubmenu = new DefaultSubMenu("Printers");
- 
-        item = new DefaultMenuItem("Printer");
-        item.setIcon("ui-icon-disk");
-        item.setCommand("#{dataRecorderBean.save}");
-        //item.setUpdate("messages");
-        secondSubmenu.addElement(item);
-         
- 
+        DebugUtil.log(service.getLoggedInUser().toString());
+        List<String> ownerMenus = service.getUserOwnerStrngs(service.getLoggedInUser());
+        DebugUtil.log("ownerMenus " + ownerMenus);
+        
+        if(ownerMenus != null) {
+	        for(String ownerMenu : ownerMenus) {
+	        	item = new DefaultMenuItem(ownerMenu);
+	            item.setIcon("ui-icon-disk");
+	            item.setCommand("#{dataRecorderBean.loadOwnerSensorData}");
+	            item.setValue(ownerMenu);
+	            item.setParam("owner", ownerMenu);
+	            item.setParam("dataTypeId", 3L);
+	            item.setUpdate("myTable");
+	            secondSubmenu.addElement(item);
+	        }
+        }
+        
         MenuModel.addElement(secondSubmenu);
+        
     }
     
     private void createCustomerMenu() {
@@ -103,7 +123,7 @@ public class DataRecorderBean {
     }
     
     
-    public void loadContactData() {
+    public void loadOwnerData() {
     	FacesContext fc = FacesContext.getCurrentInstance();
     	Map<String,String> params = fc.getExternalContext().getRequestParameterMap();
     	for(String key : params.keySet()) {
@@ -115,13 +135,44 @@ public class DataRecorderBean {
     		tableDataType = dataTypeManager.getAwsDataMap().get(dataTypeId);
 	    	System.out.println("loadContactData : " + tableDataType);
 	    	
-	    	tableDatas = OwnerConfigService.getInstance().getOwnList();
+	    	tableDatas = service.getUserOwnerLists(service.getLoggedInUser());
 	    	tableDataColumns = tableDataType.getColumnModels();
     	} else {
     		System.out.println("dataTypeId is null");
     	}
     	
     }
+    
+    
+    public void loadOwnerSensorData() {
+    	FacesContext fc = FacesContext.getCurrentInstance();
+    	Map<String,String> params = fc.getExternalContext().getRequestParameterMap();
+    	for(String key : params.keySet()) {
+    		System.out.println("key " + key + ", value " + params.get(key));
+    	}
+    	
+    	dataTypeId =  Long.parseLong(params.get("dataTypeId"));
+    	DebugUtil.log("dataTypeId " + dataTypeId);
+    	String owner = params.get("owner");
+    	
+    	if(dataTypeId != null) {
+    		tableDataType = dataTypeManager.getAwsDataMap().get(dataTypeId);
+	    	System.out.println("loadOwnerSensorData : " + tableDataType);
+	    	
+	    	if(dataTypeId.equals(3L)) {
+	    		menuSensor = owner;
+				selTableListDataObj = service.getContactStringsForOwner(owner);
+				DebugUtil.log("selTableListDataObj " + selTableListDataObj.toString());
+			}
+  	
+	    	tableDatas = service.getSensorListsByOwner(owner);
+	    	tableDataColumns = tableDataType.getColumnModels();
+    	} else {
+    		System.out.println("dataTypeId is null");
+    	}
+    }
+    
+    
     
     public List<ColumnModel> getTableDataColumns() {
 		return tableDataColumns;
@@ -163,7 +214,46 @@ public class DataRecorderBean {
      
     public void buttonSaveAction() {
         //addMessage("Success", "Data saved");
-    	System.out.println("develop service to save current table object");
+    	if(this.isValidTableDataKey()) {
+    		
+    		List<String> owners = new ArrayList();
+    		for(Object obj : this.tableDatas) {
+    			
+    			if(this.getDataTypeId().equals(1L)) {
+    				AwsDataInterface awsData = (AwsDataInterface) obj;
+    				String owner = (String) awsData.getKey();
+    				owners.add(owner);
+    			}
+    			DebugUtil.log(obj.toString());
+    			service.saveAwsData(obj);
+    		}
+    		
+    		if(this.getDataTypeId().equals(1L)) {
+    			DebugUtil.log("save managed owners " + service.getLoggedInUser().getManagedOwners());
+    			service.getLoggedInUser().setManagedOwners(owners);
+    			service.saveAwsData(service.getLoggedInUser());
+    			
+    		}
+    		createRootMenu();
+    		
+    	} else {
+    		DebugUtil.error("buttonSaveAction table data key is not valid");
+    	}
+    	
+    }
+    
+    public void buttonSaveMapObjAction() {
+    	if(this.isValidTableDataKey()) {
+    		DebugUtil.log("buttonSaveMapObjAction table data key is valid, can save");
+    	} else {
+    		DebugUtil.error("buttonSaveMapObjAction table data key is not valid");
+    	}
+    	
+    	if(this.isValidTableMapDataKey()) {
+    		DebugUtil.log("buttonSaveMapObjAction table data key is valid, can save");
+    	} else {
+    		DebugUtil.error("buttonSaveMapObjAction table data key is not valid");
+    	}
     }
      
     public void save() {
@@ -232,23 +322,32 @@ public class DataRecorderBean {
         this.selTableDatas = aSelectedCars;
     }
 	
-	public Map getSelTableDataObj() {
-		return selTableDataObj;
+	public Map getSelTableMapDataObj() {
+		return selTableMapDataObj;
 	}
 	
-	public void setSelTableDataObj(Map selObj) {
-		System.out.println("setSelTableDataObj " + selObj.toString());
+	public void setSelTableMapDataObj(Map selObj) {
+		System.out.println("setSelTableMapDataObj " + selObj.toString());
 		if(mapDataTypeId != null) {
 			AwsDataType awsDataType = dataTypeManager.getAwsDataMap().get(mapDataTypeId);
 			
 			this.selTableDataMapColumns = awsDataType.getColumnModels();
-			this.selTableDataObj = selObj;
+			this.selTableMapDataObj = selObj;
 		} else {
 			System.out.println("mapDataTypeId is null");
 		}
 	}
 	
 	
+	public String[] getSelTableListDataObj() {
+		return selTableListDataObj;
+	}
+
+	public void setSelTableListDataObj(String[] selObj) {
+		DebugUtil.log("setSelTableMapDataObj " + selObj.toString());
+		this.selTableListDataObj = selTableListDataObj;
+	}
+
 	public Object getSelTableDataObjKey() {
 		return selTableDataObjKey;
 	}
@@ -265,51 +364,74 @@ public class DataRecorderBean {
 		this.selTableDataMapColumns = selColumns;
 	}
 	
-	public List<Object> getSelTableDataMapObjs() {
-		return selTableDataMapObjs;
+	public List<Object> getSelDialogMapObjs() {
+		return selDialogMapObjs;
 	}
-	public void setSelTableDataMapObjs(List<Object> selectedMapObjs) {
-		this.selTableDataMapObjs = selectedMapObjs;
+	public void setSelDialogMapObjs(List<Object> selectedMapObjs) {
+		this.selDialogMapObjs = selectedMapObjs;
 	}
     
 	public void buttonNewAction(ActionEvent actionEvent) {
-		Object obj;
-		try {
-			
-			String className = tableDataType.getDataClass();
-			obj = Class.forName(className).newInstance();
-			
-			PodamFactory factory = new PodamFactoryImpl();
+		
+		if(this.getTableDatas() != null) {
+			Object obj;
+			try {
 
-			// This will use constructor with minimum arguments and
-			// then setters to populate POJO
-			factory.populatePojo(obj);
-			System.out.println("new car " + obj.toString());
-			
-			this.getTableDatas().add(obj);
-			
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+				DebugUtil.log("tableDataType.getDataTypeId() " + tableDataType.getDataTypeId());
+				if(tableDataType.getDataTypeId() != null && tableDataType.getDataTypeId().equals(1L)) {
+					obj = service.getOwnerConfigService().createOwnerConfigDummy();
+				} else if(tableDataType.getDataTypeId() != null && tableDataType.getDataTypeId().equals(3L)) {
+					obj = service.getSensorConfigService().createSensorConfigDummy(menuSensor);
+				} else {
+					String className = tableDataType.getDataClass();
+					obj = Class.forName(className).newInstance();
+					
+					PodamFactory factory = new PodamFactoryImpl();
+		
+					// This will use constructor with minimum arguments and
+					// then setters to populate POJO
+					factory.populatePojo(obj);
+					System.out.println("new object using Podam " + obj.toString());
+				}
+				this.getTableDatas().add(obj);
+				
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 	}
 	
 	public void buttonDeleteAction(ActionEvent actionEvent) {
-//		System.out.println("delete selected cars " + selTableDatas.size());
-    	if(selTableDatas != null) {
-    		for(int i=0; i<selTableDatas.size();i++) {
-    			Object obj = selTableDatas.get(i);
-//    			System.out.println(obj.toString());
-    			this.tableDatas.remove(obj);
-    		}
-    	}
+		DebugUtil.log("delete selected size " + selTableDatas.size());
+		if(this.isValidTableDataKey()) {
+	    	if(selTableDatas != null) {
+	    		for(int i=0; i<selTableDatas.size();i++) {
+	    			AwsDataInterface obj = (AwsDataInterface) selTableDatas.get(i);
+	    			System.out.println(obj.toString());
+	    			for(Object object : this.getSelTableDatas()) {
+	    				AwsDataInterface awsData = (AwsDataInterface) object;
+	    				if(obj.getKey().equals(awsData.getKey())) {
+	    					this.tableDatas.remove(object);
+	    					service.removeAwsData(awsData);
+	    				}
+	    			}
+	    			
+	    		}
+	    	} 
+	    	
+	    	createRootMenu();
+		} else {
+    		FacesContext.getCurrentInstance()
+			.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "not able to delete record."));
+		}
 		
 //		System.out.println("DataList " + tableDatas.size());
 //    	for(int i=0; i< tableDatas.size(); i++) {
@@ -324,7 +446,9 @@ public class DataRecorderBean {
 		
 		AwsDataInterface obj;
 		try {
-			
+			if(tableDataType.getDataTypeId().equals(2L)) {
+				obj = service.getOwnerConfigService().createContactDummy();
+			} 
 			String className = tableMapDataType.getDataClass();
 			obj = (AwsDataInterface) Class.forName(className).newInstance();
 			
@@ -335,7 +459,7 @@ public class DataRecorderBean {
 			factory.populatePojo(obj);
 			System.out.println("new map object : " + obj.toString());
 			
-			this.getSelTableDataObj().put(obj.getKey(), obj);
+			this.getSelTableMapDataObj().put(obj.getKey(), obj);
 			
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -351,14 +475,14 @@ public class DataRecorderBean {
 	}
 	
 	public void buttonDeleteMapObjAction(ActionEvent actionEvent) {
-		System.out.println("delete selected cars " + selTableDataMapObjs.size());
-    	if(selTableDataMapObjs != null) {
-    		for(int i=0; i<selTableDataMapObjs.size();i++) {
-    			AwsDataInterface obj = (AwsDataInterface) selTableDataMapObjs.get(i);
+		System.out.println("delete selected map data size  " + selDialogMapObjs.size());
+    	if(selDialogMapObjs != null) {
+    		for(int i=0; i<selDialogMapObjs.size();i++) {
+    			AwsDataInterface obj = (AwsDataInterface) selDialogMapObjs.get(i);
     			System.out.println(obj.toString());
-    			if(selTableDataObj.containsKey(obj.getKey())) {
+    			if(selTableMapDataObj.containsKey(obj.getKey())) {
     				System.out.println("object key is in the map, remove the object.");
-    				this.selTableDataObj.remove(obj.getKey());
+    				this.selTableMapDataObj.remove(obj.getKey());
     			} else {
     				System.out.println("===== object key not in the map."); 
     			}
@@ -366,13 +490,46 @@ public class DataRecorderBean {
     		}
     	}
 		
-		System.out.println("selTableDataObj " + selTableDataObj.size());
-    	Iterator itr = selTableDataObj.values().iterator();
+		System.out.println("selTableDataObj " + selTableMapDataObj.size());
+    	Iterator itr = selTableMapDataObj.values().iterator();
     	while(itr.hasNext()) {
     		AwsDataInterface obj = (AwsDataInterface) itr.next();
     		System.out.println(obj.toString());
     	}
 	}
 	
+	public boolean isValidTableDataKey() {
+		boolean result = true;
+		List<Object> tableDataKeys = new ArrayList();
+		for(Object object : this.getTableDatas()) {
+			AwsDataInterface awsData = (AwsDataInterface) object;
+			if(awsData.getKey() == null || awsData.getKey().equals("")) {
+				result = false;
+			} else if(tableDataKeys.contains(awsData.getKey())) {
+				result = false;
+			} else {
+				tableDataKeys.add(awsData.getKey());
+			}
+		}
+		
+		return result;
+	}
+	
+	public boolean isValidTableMapDataKey() {
+		boolean result = true;
+		List<Object> tableDataKeys = new ArrayList();
+		for(Object object : this.getSelTableMapDataObj().values()) {
+			AwsDataInterface awsData = (AwsDataInterface) object;
+			if(awsData.getKey() == null || awsData.getKey().equals("")) {
+				result = false;
+			} else if(tableDataKeys.contains(awsData.getKey())) {
+				result = false;
+			} else {
+				tableDataKeys.add(awsData.getKey());
+			}
+		}
+		
+		return result;
+	}
     
 }

@@ -74,7 +74,7 @@
 		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-dynamodb -->
 		<dependency>
 		    <groupId>com.amazonaws</groupId>
-		    <artifactId>aws-java-sdk-dynamodb</artifactId>
+		    <artifactId>aws-java-sdk</artifactId>
 		    <version>1.11.303</version>
 		</dependency>
 		
@@ -90,13 +90,34 @@
 		    <artifactId>podam</artifactId>
 		    <version>7.1.1.RELEASE</version>
 		</dependency>
-		
+		 
 		<dependency>
 			<groupId>org.fluttercode.datafactory</groupId>
 			<artifactId>datafactory</artifactId>
 			<version>0.8</version>
 		</dependency>
 		
+		<!-- 
+		<dependency>
+			<groupId>com.mwi.aws</groupId>
+			<artifactId>lambda-mobilehandler</artifactId>
+			<version>1.0</version>
+		</dependency>
+		 -->
+		 
+		<dependency>
+			<groupId>com.mwi.aws</groupId>
+			<artifactId>dynamodb-objectmodel</artifactId>
+			<version>1.0</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-api</artifactId>
+		    <version>1.7.25</version>
+		</dependency>
+
 	</dependencies>
 	<build>
 

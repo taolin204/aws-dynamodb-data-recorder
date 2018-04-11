@@ -7,6 +7,8 @@ package com.mwi.aws.dynamodb;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.mwi.aws.dynamodb.service.AwsService;
+
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -110,14 +112,16 @@ public class SessionBean {
      * @return
      */
     public boolean login(String userName, String password) {
-        boolean success = true;
-        this.userName = userName;
-        isLoggedIn = true;
-        //reload menu page
-        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-//                        session.setAttribute("menuReload", "Y");
-        session.setAttribute("validSession", true);
-        applicationBean.getUserSessionMap().put(session.getId(), this);
+        boolean success = AwsService.getInstance().validateUserLogin(userName);
+        if(success) {
+	        this.userName = userName;
+	        isLoggedIn = true;
+	        //reload menu page
+	        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+	//                        session.setAttribute("menuReload", "Y");
+	        session.setAttribute("validSession", true);
+	        applicationBean.getUserSessionMap().put(session.getId(), this);
+        }
         return success;
     }
 
