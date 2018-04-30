@@ -16,6 +16,7 @@ public class AwsDataTypeTest {
 		
 		AwsDataType awsDataType = new AwsDataType();
 		awsDataType.setDataTypeId(1L);
+		awsDataType.setPanelSize(1020L);
 		awsDataType.setDataClass("com.mfg.OwnerConfig");
 		
 		List columns = new ArrayList<ColumnModel>();		
@@ -24,14 +25,16 @@ public class AwsDataTypeTest {
         columnDescriptor.setKey("");
         columnDescriptor.setValue("owner");         
         columnDescriptor.setHeader("Owner");        
-        columnDescriptor.setType("String");        
+        columnDescriptor.setType("String");
+        columnDescriptor.setColumnSize(520L);
         columns.add(columnDescriptor);
         
         columnDescriptor = new ColumnModel();
         columnDescriptor.setKey("");
         columnDescriptor.setValue("address");         
         columnDescriptor.setHeader("Address");        
-        columnDescriptor.setType("String");        
+        columnDescriptor.setType("String");
+        columnDescriptor.setColumnSize(520L);
         columns.add(columnDescriptor);
 		
 
@@ -41,6 +44,7 @@ public class AwsDataTypeTest {
         columnDescriptor.setHeader("contacts");        
         columnDescriptor.setType("Map");  
         columnDescriptor.setMapDataTypeId(2L);
+        columnDescriptor.setColumnSize(520L);
         columns.add(columnDescriptor);
         
         awsDataType.setColumnModels(columns);
@@ -49,29 +53,33 @@ public class AwsDataTypeTest {
         //code to generate contact class xml definition.
         awsDataType = new AwsDataType();
 		awsDataType.setDataTypeId(2L);
+		awsDataType.setPanelSize(800L);
 		awsDataType.setDataClass("com.mfg.Contact");
 		
 		columns = new ArrayList<ColumnModel>();
 		
 		columnDescriptor = new ColumnModel();	
 		columnDescriptor.setKey("");
-		columnDescriptor.setValue("contactNumber");         
-        columnDescriptor.setHeader("ContactNumber");        
-        columnDescriptor.setType("String");        
+		columnDescriptor.setValue("contactName");         
+        columnDescriptor.setHeader("ContactName");        
+        columnDescriptor.setType("String"); 
+        columnDescriptor.setColumnSize(270L);
         columns.add(columnDescriptor);
         
         columnDescriptor = new ColumnModel();
         columnDescriptor.setKey("");
         columnDescriptor.setValue("email");         
         columnDescriptor.setHeader("Email");        
-        columnDescriptor.setType("String");        
+        columnDescriptor.setType("String");  
+        columnDescriptor.setColumnSize(270L);
         columns.add(columnDescriptor);
 		
         columnDescriptor = new ColumnModel();
         columnDescriptor.setKey("");
         columnDescriptor.setValue("phoneNumber");         
         columnDescriptor.setHeader("PhoneNumber");        
-        columnDescriptor.setType("String");        
+        columnDescriptor.setType("String"); 
+        columnDescriptor.setColumnSize(270L);
         columns.add(columnDescriptor);
         
         awsDataType.setColumnModels(columns);
@@ -79,151 +87,185 @@ public class AwsDataTypeTest {
         
         
         awsDataType = new AwsDataType();
-		awsDataType.setDataTypeId(2L);
+		awsDataType.setDataTypeId(3L);
+		awsDataType.setPanelSize(2400L);
 		awsDataType.setDataClass("com.mfg.SensorConfig");
         
 		columns = new ArrayList<ColumnModel>();
 		
-		columnDescriptor = new ColumnModel();	
-		columnDescriptor.setKey("");
-		columnDescriptor.setValue("address");         
-        columnDescriptor.setHeader("Address");        
-        columnDescriptor.setType("String");        
-        columns.add(columnDescriptor);
         
         columnDescriptor = new ColumnModel();	
 		columnDescriptor.setKey("");
-		columnDescriptor.setValue("alias");         
-        columnDescriptor.setHeader("Alias");        
-        columnDescriptor.setType("String");        
-        columns.add(columnDescriptor);
-        
-        columnDescriptor = new ColumnModel();	
-		columnDescriptor.setKey("");
-		columnDescriptor.setValue("alias");         
-        columnDescriptor.setHeader("Alias");        
-        columnDescriptor.setType("String");        
-        columns.add(columnDescriptor);
-        
-        columnDescriptor = new ColumnModel();	
-		columnDescriptor.setKey("");
-		columnDescriptor.setValue("enablePoll");         
-        columnDescriptor.setHeader("EnablePoll");        
-        columnDescriptor.setType("Boolean");        
-        columns.add(columnDescriptor);
-        
-        columnDescriptor = new ColumnModel();	
-		columnDescriptor.setKey("");
-		columnDescriptor.setValue("installationDate");         
-        columnDescriptor.setHeader("InstallationDate");        
-        columnDescriptor.setType("String");        
-        columns.add(columnDescriptor);
-        
-        columnDescriptor = new ColumnModel();	
-		columnDescriptor.setKey("");
-		columnDescriptor.setValue("installedBy");         
-        columnDescriptor.setHeader("InstalledBy");        
-        columnDescriptor.setType("String");        
-        columns.add(columnDescriptor);
-        
-        columnDescriptor = new ColumnModel();	
-		columnDescriptor.setKey("");
-		columnDescriptor.setValue("location");         
-        columnDescriptor.setHeader("Location");        
-        columnDescriptor.setType("String");        
-        columns.add(columnDescriptor);
-        
-        columnDescriptor = new ColumnModel();	
-		columnDescriptor.setKey("");
-		columnDescriptor.setValue("maintContract");         
-        columnDescriptor.setHeader("MaintContract");        
-        columnDescriptor.setType("String");        
-        columns.add(columnDescriptor);
-        
-        columnDescriptor = new ColumnModel();	
-		columnDescriptor.setKey("");
-		columnDescriptor.setValue("maintStartDate");         
-        columnDescriptor.setHeader("MaintStartDate");        
-        columnDescriptor.setType("String");        
-        columns.add(columnDescriptor);
-        
-        columnDescriptor = new ColumnModel();	
-		columnDescriptor.setKey("");
-		columnDescriptor.setValue("maintEndDate");         
-        columnDescriptor.setHeader("MaintEndDate");        
-        columnDescriptor.setType("String");        
-        columns.add(columnDescriptor);
-        
-        columnDescriptor = new ColumnModel();	
-		columnDescriptor.setKey("");
-		columnDescriptor.setValue("manufacturer");         
-        columnDescriptor.setHeader("Manufacturer");        
-        columnDescriptor.setType("String");        
-        columns.add(columnDescriptor);
-        
-        columnDescriptor = new ColumnModel();	
-		columnDescriptor.setKey("");
-		columnDescriptor.setValue("model");         
-        columnDescriptor.setHeader("Model");        
-        columnDescriptor.setType("String");        
+		columnDescriptor.setValue("sensorId");         
+        columnDescriptor.setHeader("SensorId");        
+        columnDescriptor.setType("String"); 
+        columnDescriptor.setColumnSize(120L);      
         columns.add(columnDescriptor);
         
         columnDescriptor = new ColumnModel();	
 		columnDescriptor.setKey("");
 		columnDescriptor.setValue("owner");         
         columnDescriptor.setHeader("Owner");        
-        columnDescriptor.setType("String");        
+        columnDescriptor.setType("String");    
+        columnDescriptor.setEditable("false");    
+        columnDescriptor.setColumnSize(120L);
         columns.add(columnDescriptor);
         
         columnDescriptor = new ColumnModel();	
 		columnDescriptor.setKey("");
-		columnDescriptor.setValue("pollInterval");         
-        columnDescriptor.setHeader("PollInterval");        
-        columnDescriptor.setType("Long");        
+		columnDescriptor.setValue("address");         
+        columnDescriptor.setHeader("Address");        
+        columnDescriptor.setType("String");  
+        columnDescriptor.setColumnSize(150L);
         columns.add(columnDescriptor);
         
         columnDescriptor = new ColumnModel();	
 		columnDescriptor.setKey("");
-		columnDescriptor.setValue("sensorId");         
-        columnDescriptor.setHeader("SensorId");        
-        columnDescriptor.setType("String");        
+		columnDescriptor.setValue("location");         
+        columnDescriptor.setHeader("Location");        
+        columnDescriptor.setType("String");
+        columnDescriptor.setColumnSize(120L);
         columns.add(columnDescriptor);
         
         columnDescriptor = new ColumnModel();	
 		columnDescriptor.setKey("");
-		columnDescriptor.setValue("serialNumber");         
-        columnDescriptor.setHeader("SerialNumber");        
-        columnDescriptor.setType("String");        
+		columnDescriptor.setValue("alias");         
+        columnDescriptor.setHeader("Alias");        
+        columnDescriptor.setType("String");      
+        columnDescriptor.setColumnSize(150L);
+        columns.add(columnDescriptor);
+        
+//        columnDescriptor = new ColumnModel();	
+//		columnDescriptor.setKey("");
+//		columnDescriptor.setValue("enablePoll");         
+//        columnDescriptor.setHeader("EnablePoll");        
+//        columnDescriptor.setType("Boolean"); 
+//        columnDescriptor.setColumnSize(120L);
+//        columns.add(columnDescriptor);
+        
+        columnDescriptor = new ColumnModel();	
+		columnDescriptor.setKey("");
+		columnDescriptor.setValue("installationDate");         
+        columnDescriptor.setHeader("InstallationDate");        
+        columnDescriptor.setType("String");      
+        columnDescriptor.setColumnSize(120L);
         columns.add(columnDescriptor);
         
         columnDescriptor = new ColumnModel();	
 		columnDescriptor.setKey("");
-		columnDescriptor.setValue("softwareInstalled");         
-        columnDescriptor.setHeader("SoftwareInstalled");        
-        columnDescriptor.setType("String");        
+		columnDescriptor.setValue("installedBy");         
+        columnDescriptor.setHeader("InstalledBy");        
+        columnDescriptor.setType("String");   
+        columnDescriptor.setColumnSize(120L);
+        columns.add(columnDescriptor);
+        
+
+        
+        columnDescriptor = new ColumnModel();	
+		columnDescriptor.setKey("");
+		columnDescriptor.setValue("maintContract");         
+        columnDescriptor.setHeader("MaintContract");        
+        columnDescriptor.setType("String"); 
+        columnDescriptor.setColumnSize(120L);
         columns.add(columnDescriptor);
         
         columnDescriptor = new ColumnModel();	
 		columnDescriptor.setKey("");
-		columnDescriptor.setValue("softwareLicense");         
-        columnDescriptor.setHeader("SoftwareLicense");        
-        columnDescriptor.setType("String");        
-        columns.add(columnDescriptor);
-        
-        columnDescriptor = new ColumnModel();	
-		columnDescriptor.setKey("");
-		columnDescriptor.setValue("type");         
-        columnDescriptor.setHeader("Type");        
-        columnDescriptor.setType("String");        
+		columnDescriptor.setValue("manufacturer");         
+        columnDescriptor.setHeader("Manufacturer");        
+        columnDescriptor.setType("String");     
+        columnDescriptor.setColumnSize(120L);
         columns.add(columnDescriptor);
         
         columnDescriptor = new ColumnModel();	
 		columnDescriptor.setKey("");
 		columnDescriptor.setValue("contactNames");         
         columnDescriptor.setHeader("ContactNames");        
-        columnDescriptor.setType("ListString");        
+        columnDescriptor.setType("ListString");   
+        columnDescriptor.setColumnSize(180L);
         columns.add(columnDescriptor);
-  
+        
+        columnDescriptor = new ColumnModel();	
+		columnDescriptor.setKey("");
+		columnDescriptor.setValue("maintStartDate");         
+        columnDescriptor.setHeader("MaintStartDate");        
+        columnDescriptor.setType("String");
+        columnDescriptor.setColumnSize(120L);
+        columns.add(columnDescriptor);
+        
+        columnDescriptor = new ColumnModel();	
+		columnDescriptor.setKey("");
+		columnDescriptor.setValue("maintEndDate");         
+        columnDescriptor.setHeader("MaintEndDate");        
+        columnDescriptor.setType("String");      
+        columnDescriptor.setColumnSize(120L);
+        columns.add(columnDescriptor);
+        
+        columnDescriptor = new ColumnModel();	
+		columnDescriptor.setKey("");
+		columnDescriptor.setValue("warrantyStartDate");         
+        columnDescriptor.setHeader("WarrantyStartDate");        
+        columnDescriptor.setType("String"); 
+        columnDescriptor.setColumnSize(120L);
+        columns.add(columnDescriptor);
+        
+        columnDescriptor = new ColumnModel();	
+		columnDescriptor.setKey("");
+		columnDescriptor.setValue("warrantyEndDate");         
+        columnDescriptor.setHeader("WarrantyEndDate");        
+        columnDescriptor.setType("String");    
+        columnDescriptor.setColumnSize(120L);
+        columns.add(columnDescriptor);
+        
+        columnDescriptor = new ColumnModel();	
+		columnDescriptor.setKey("");
+		columnDescriptor.setValue("model");         
+        columnDescriptor.setHeader("Model");        
+        columnDescriptor.setType("String");    
+        columnDescriptor.setColumnSize(120L);
+        columns.add(columnDescriptor);
+       
+        
+//        columnDescriptor = new ColumnModel();	
+//		columnDescriptor.setKey("");
+//		columnDescriptor.setValue("pollInterval");         
+//        columnDescriptor.setHeader("PollInterval");        
+//        columnDescriptor.setType("Long");  
+//        columnDescriptor.setColumnSize(120L);
+//        columns.add(columnDescriptor);
+        
+        columnDescriptor = new ColumnModel();	
+		columnDescriptor.setKey("");
+		columnDescriptor.setValue("serialNumber");         
+        columnDescriptor.setHeader("SerialNumber");        
+        columnDescriptor.setType("String");  
+        columnDescriptor.setColumnSize(120L);
+        columns.add(columnDescriptor);
+        
+        columnDescriptor = new ColumnModel();	
+		columnDescriptor.setKey("");
+		columnDescriptor.setValue("softwareInstalled");         
+        columnDescriptor.setHeader("SoftwareInstalled");        
+        columnDescriptor.setType("String");  
+        columnDescriptor.setColumnSize(120L);
+        columns.add(columnDescriptor);
+        
+        columnDescriptor = new ColumnModel();	
+		columnDescriptor.setKey("");
+		columnDescriptor.setValue("softwareLicense");         
+        columnDescriptor.setHeader("SoftwareLicense");        
+        columnDescriptor.setType("String");   
+        columnDescriptor.setColumnSize(120L);
+        columns.add(columnDescriptor);
+        
+//        columnDescriptor = new ColumnModel();	
+//		columnDescriptor.setKey("");
+//		columnDescriptor.setValue("type");         
+//        columnDescriptor.setHeader("Type");        
+//        columnDescriptor.setType("String"); 
+//        columnDescriptor.setColumnSize(120L);
+//        columns.add(columnDescriptor);
+        
         awsDataType.setColumnModels(columns);
         awsDataTypes.getAwsDataTypes().add(awsDataType);
     	

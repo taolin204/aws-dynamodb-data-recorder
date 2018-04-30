@@ -12,9 +12,11 @@ package com.mwi.aws.dynamodb.ui;
 //import com.mwi.cad.systemmgr.message.SystemMgrConstant;
 //import com.mwi.cad.web.config.ApplicationBeanConfig;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
 
 import com.mwi.aws.dynamodb.SessionBean;
 
@@ -38,7 +40,7 @@ public class Login {
     public void init() {
         try {
             if (sessionBean.isIsLoggedIn()) {
-                sessionBean.redirect("/datarecorder/faces/DataRecorder.xhtml");
+                sessionBean.redirect("/printerweb/faces/PrinterWeb.xhtml");
             }
         } catch (Exception e) {
             //if error occurs due to session time out do nothing
@@ -89,8 +91,9 @@ public class Login {
     public String login() {
         String str = null;
         if(sessionBean.login(userName, passWord)){
-            str = "DataRecorder";
+            str = "PrinterWeb";
         }else{
+        	FacesContext.getCurrentInstance().addMessage("form1:messages1", new FacesMessage(FacesMessage.SEVERITY_WARN, "WARN", "Invalid login!"));
 //        LoginOutput output = CADServiceManager.getInstance().getJmsSystemServiceProvider().login(userName, passWord, "Client1");
 //        if (output == null) {
 //            FacesContext.getCurrentInstance().addMessage("loginForm:messages1", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Server Communication Error!"));

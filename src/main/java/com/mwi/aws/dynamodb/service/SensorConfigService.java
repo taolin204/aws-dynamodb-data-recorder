@@ -31,7 +31,7 @@ public class SensorConfigService {
     	DataFactory dataFactory = new DataFactory();
     	
     	SensorConfig sensorConfig = new SensorConfig();
-    	sensorConfig.setSensorId(dataFactory.getRandomChars(8));
+    	sensorConfig.setSensorId("SensorId");
     	sensorConfig.setAddress("");
     	sensorConfig.setAlias("");
     	sensorConfig.setAwsThing("EC2GW-NodeRed");
@@ -50,7 +50,8 @@ public class SensorConfigService {
     	sensorConfig.setSoftwareInstalled("");
     	sensorConfig.setSoftwareLicense("");
     	sensorConfig.setType("Printer");
-    	
+    	sensorConfig.setWarrantyStartDate("");
+    	sensorConfig.setWarrantyEndDate("10/01/2017");
     	List<String> contactNames = new ArrayList();
     	sensorConfig.setContactNames(contactNames);
 		

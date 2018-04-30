@@ -112,7 +112,7 @@ public class SessionBean {
      * @return
      */
     public boolean login(String userName, String password) {
-        boolean success = AwsService.getInstance().validateUserLogin(userName);
+        boolean success = AwsService.getInstance().validateUserLogin(userName, password);
         if(success) {
 	        this.userName = userName;
 	        isLoggedIn = true;

@@ -28,7 +28,7 @@
                 <h:form id="form1" >          
                     <p:panel id="pMain" style=" border: 0px; width: 50%; margin: 0 auto" >
                         <h:panelGrid columns="1" style="margin: 0 auto"  cellpadding="5">
-                            <p:graphicImage name="loginImage.png" library="image" />
+                            <p:graphicImage name="login2.png" library="image" />
                         </h:panelGrid>
                         <p:panel style=" width: 50%; margin: 0 auto ; border: 0px" >
                             <p:messages showSummary="false" showDetail="true" autoUpdate="true" closable="true" escape="false" styleClass="alertMsg" />
@@ -39,7 +39,6 @@
                                 <p:inputText type="password" id="password" required="true" value="#{loginView.passWord}" style="background: rgb(250, 255, 189) !important" /> 
                             </h:panelGrid>
                             <h:panelGrid columns="2" style=" margin: 0 auto; padding-left: 150px " cellpadding="5px"  >
-                                <p:link href="faces/ForgotPassword.xhtml" value="Forgot Password?" />
                                 <p:commandButton value="Login" action="#{loginView.login()}" validateClient="true" ajax="false"/>
                             </h:panelGrid>       
                         </p:panel>                             

@@ -59,7 +59,7 @@
     </filter-mapping>
     <filter-mapping>
         <filter-name>VrfyUsrSessionFltr</filter-name>
-        <url-pattern>/faces/DataRecorder.xhtml/*</url-pattern>
+        <url-pattern>/faces/PrinterWeb.xhtml/*</url-pattern>
     </filter-mapping>
    <!--End session verification filter config-->
     <session-config>

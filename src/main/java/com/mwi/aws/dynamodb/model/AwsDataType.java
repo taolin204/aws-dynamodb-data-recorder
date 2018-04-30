@@ -10,6 +10,7 @@ public class AwsDataType {
 
 	private Long dataTypeId;
 	private String dataClass;
+	private Long panelSize;
 	private List<ColumnModel> columnModels;
 	
 	public Long getDataTypeId() {
@@ -31,6 +32,12 @@ public class AwsDataType {
 		this.columnModels = columnModels;
 	}
 	
+	public Long getPanelSize() {
+		return panelSize;
+	}
+	public void setPanelSize(Long panelSize) {
+		this.panelSize = panelSize;
+	}
 	@Override 
     public String toString() { 
             return ReflectionToStringBuilder.toString(this); 

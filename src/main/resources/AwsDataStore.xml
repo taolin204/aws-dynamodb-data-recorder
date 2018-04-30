@@ -3,175 +3,214 @@
     <AwsData>
       <dataTypeId>1</dataTypeId>
       <dataClass>com.mfg.OwnerConfig</dataClass>
+      <panelSize>1020</panelSize>
       <columnModels>
         <Column>
           <key></key>
           <value>owner</value>
           <header>Owner</header>
           <type>String</type>
+          <columnSize>520</columnSize>
+          <editable>true</editable>
         </Column>
         <Column>
           <key></key>
           <value>address</value>
           <header>Address</header>
           <type>String</type>
+          <columnSize>520</columnSize>
+          <editable>true</editable>
         </Column>
         <Column>
           <key>owner</key>
           <value>contacts</value>
           <header>contacts</header>
           <type>Map</type>
+          <columnSize>520</columnSize>
           <mapDataTypeId>2</mapDataTypeId>
+          <editable>true</editable>
         </Column>
       </columnModels>
     </AwsData>
     <AwsData>
       <dataTypeId>2</dataTypeId>
       <dataClass>com.mfg.Contact</dataClass>
+      <panelSize>800</panelSize>
       <columnModels>
         <Column>
           <key></key>
           <value>contactName</value>
           <header>ContactName</header>
           <type>String</type>
+          <columnSize>270</columnSize>
+          <editable>true</editable>
         </Column>
         <Column>
           <key></key>
           <value>email</value>
           <header>Email</header>
           <type>String</type>
+          <columnSize>270</columnSize>
+          <editable>true</editable>
         </Column>
         <Column>
           <key></key>
           <value>phoneNumber</value>
           <header>PhoneNumber</header>
           <type>String</type>
+          <columnSize>270</columnSize>
+          <editable>true</editable>
         </Column>
       </columnModels>
     </AwsData>
     <AwsData>
       <dataTypeId>3</dataTypeId>
       <dataClass>com.mfg.SensorConfig</dataClass>
+      <panelSize>2400</panelSize>
       <columnModels>
         <Column>
           <key></key>
           <value>sensorId</value>
           <header>SensorId</header>
           <type>String</type>
-        </Column>
-        <Column>
-          <key></key>
-          <value>address</value>
-          <header>Address</header>
-          <type>String</type>
-        </Column>
-        <Column>
-          <key></key>
-          <value>alias</value>
-          <header>Alias</header>
-          <type>String</type>
-        </Column>
-        <Column>
-          <key></key>
-          <value>alias</value>
-          <header>Alias</header>
-          <type>String</type>
-        </Column>
-        <Column>
-          <key></key>
-          <value>enablePoll</value>
-          <header>EnablePoll</header>
-          <type>Boolean</type>
-        </Column>
-        <Column>
-          <key></key>
-          <value>installationDate</value>
-          <header>InstallationDate</header>
-          <type>String</type>
-        </Column>
-        <Column>
-          <key></key>
-          <value>installedBy</value>
-          <header>InstalledBy</header>
-          <type>String</type>
-        </Column>
-        <Column>
-          <key></key>
-          <value>location</value>
-          <header>Location</header>
-          <type>String</type>
-        </Column>
-        <Column>
-          <key></key>
-          <value>maintContract</value>
-          <header>MaintContract</header>
-          <type>String</type>
-        </Column>
-        <Column>
-          <key></key>
-          <value>maintStartDate</value>
-          <header>MaintStartDate</header>
-          <type>String</type>
-        </Column>
-        <Column>
-          <key></key>
-          <value>maintEndDate</value>
-          <header>MaintEndDate</header>
-          <type>String</type>
-        </Column>
-        <Column>
-          <key></key>
-          <value>manufacturer</value>
-          <header>Manufacturer</header>
-          <type>String</type>
-        </Column>
-        <Column>
-          <key></key>
-          <value>model</value>
-          <header>Model</header>
-          <type>String</type>
+          <columnSize>120</columnSize>
+          <editable>true</editable>
         </Column>
         <Column>
           <key></key>
           <value>owner</value>
           <header>Owner</header>
           <type>String</type>
+          <columnSize>120</columnSize>
+          <editable>false</editable>
         </Column>
         <Column>
           <key></key>
-          <value>pollInterval</value>
-          <header>PollInterval</header>
-          <type>Long</type>
-        </Column>
-        <Column>
-          <key></key>
-          <value>serialNumber</value>
-          <header>SerialNumber</header>
+          <value>address</value>
+          <header>Address</header>
           <type>String</type>
+          <columnSize>150</columnSize>
+          <editable>true</editable>
         </Column>
         <Column>
           <key></key>
-          <value>softwareInstalled</value>
-          <header>SoftwareInstalled</header>
+          <value>location</value>
+          <header>Location</header>
           <type>String</type>
+          <columnSize>120</columnSize>
+          <editable>true</editable>
         </Column>
         <Column>
           <key></key>
-          <value>softwareLicense</value>
-          <header>SoftwareLicense</header>
+          <value>alias</value>
+          <header>Alias</header>
           <type>String</type>
+          <columnSize>150</columnSize>
+          <editable>true</editable>
         </Column>
         <Column>
           <key></key>
-          <value>type</value>
-          <header>Type</header>
+          <value>installationDate</value>
+          <header>InstallationDate</header>
           <type>String</type>
+          <columnSize>120</columnSize>
+          <editable>true</editable>
+        </Column>
+        <Column>
+          <key></key>
+          <value>installedBy</value>
+          <header>InstalledBy</header>
+          <type>String</type>
+          <columnSize>120</columnSize>
+          <editable>true</editable>
+        </Column>
+        <Column>
+          <key></key>
+          <value>maintContract</value>
+          <header>MaintContract</header>
+          <type>String</type>
+          <columnSize>120</columnSize>
+          <editable>true</editable>
+        </Column>
+        <Column>
+          <key></key>
+          <value>manufacturer</value>
+          <header>Manufacturer</header>
+          <type>String</type>
+          <columnSize>120</columnSize>
+          <editable>true</editable>
         </Column>
         <Column>
           <key></key>
           <value>contactNames</value>
           <header>ContactNames</header>
           <type>ListString</type>
+          <columnSize>180</columnSize>
+          <editable>true</editable>
+        </Column>
+        <Column>
+          <key></key>
+          <value>maintStartDate</value>
+          <header>MaintStartDate</header>
+          <type>String</type>
+          <columnSize>120</columnSize>
+          <editable>true</editable>
+        </Column>
+        <Column>
+          <key></key>
+          <value>maintEndDate</value>
+          <header>MaintEndDate</header>
+          <type>String</type>
+          <columnSize>120</columnSize>
+          <editable>true</editable>
+        </Column>
+        <Column>
+          <key></key>
+          <value>warrantyStartDate</value>
+          <header>WarrantyStartDate</header>
+          <type>String</type>
+          <columnSize>120</columnSize>
+          <editable>true</editable>
+        </Column>
+        <Column>
+          <key></key>
+          <value>warrantyEndDate</value>
+          <header>WarrantyEndDate</header>
+          <type>String</type>
+          <columnSize>120</columnSize>
+          <editable>true</editable>
+        </Column>
+        <Column>
+          <key></key>
+          <value>model</value>
+          <header>Model</header>
+          <type>String</type>
+          <columnSize>120</columnSize>
+          <editable>true</editable>
+        </Column>
+        <Column>
+          <key></key>
+          <value>serialNumber</value>
+          <header>SerialNumber</header>
+          <type>String</type>
+          <columnSize>120</columnSize>
+          <editable>true</editable>
+        </Column>
+        <Column>
+          <key></key>
+          <value>softwareInstalled</value>
+          <header>SoftwareInstalled</header>
+          <type>String</type>
+          <columnSize>120</columnSize>
+          <editable>true</editable>
+        </Column>
+        <Column>
+          <key></key>
+          <value>softwareLicense</value>
+          <header>SoftwareLicense</header>
+          <type>String</type>
+          <columnSize>120</columnSize>
+          <editable>true</editable>
         </Column>
       </columnModels>
     </AwsData>

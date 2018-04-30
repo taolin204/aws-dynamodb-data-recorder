@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"  
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:head>
+	<f:facet name="first">  
+		<meta http-equiv="X-UA-Compatible" content="EmulateIE8" />  
+	 	<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />  
+		<title>Printer Monitor System Portal</title>  
+        <style type="text/css">
+            .ui-datatable .ui-datatable-header {
+                text-align: left !important;
+            }
+            
+            .ui-state-active { 
+            	background: rgb(255,255,255) !important;;
+				font-weight: normal !important;
+				border: 1px solid rgb(0,0,0) !important;
+			}
+			
+			body {
+			    background: rgb(255, 255, 255) !important;   
+			}
+			
+			.showRedText {
+				color : red;
+			}
+       	</style>
+	</f:facet>  
+	<style type="text/css"></style>  
+</h:head>
+	
+<h:body>
+    
+    <h:form id="form">
+    	
+	     <p:layout id="myPage" fullPage="true" style="width:100%" >
+    
+			<p:layoutUnit position="north" id="north" style="height:100%" size="70">
+				<h:panelGrid border="0" cellpadding="0" cellspacing="0"  columns="3" 
+                         id="gridPanel1" width="100%"  style="padding-top: 8px; border: 0px;">
+					<h:panelGrid style="align-items: center; width: 100%; margin: 0">
+						<h:outputText value=" " style="text-align:bottom"/>
+					</h:panelGrid>
+					<h:panelGrid style="align-items: center; width: 100%; margin: 0">
+						<p:outputLabel id="staticText2" style="font-size: 18px; font-weight: bold" value="Printer Monitor System Portal"/>
+					</h:panelGrid>
+					<h:panelGrid style="align-items: center; width: 100%; margin: 0"  columns="2">
+						<h:outputText height="35" style="vertical-align: middle; float: right" value=" Login User: #{dataRecorderBean.getLoginUserName()}" />
+						<p:commandButton height="35" style="vertical-align: middle;padding-right: 20px; float: right" icon="fa fa-sign-out" value="Logout" actionListener="#{dataRecorderBean.buttonLogoutAction}"/>
+					</h:panelGrid>
+				</h:panelGrid>
+	        </p:layoutUnit>
+	        
+	    	<p:layoutUnit position="west" size="300" id="west">
+	    	
+	    		<p:tree id="myMenu" value="#{dataRecorderBean.root}" var="doc" selectionMode="single" selection="#{dataRecorderBean.selectedNode}">
+			       <p:ajax event="select" update=":form:myTable :form:errorMessage" listener="#{dataRecorderBean.onNodeSelect}" />
+
+			        <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+			            <h:outputText style="font-size:20px;" value="#{doc.name}"/>
+			        </p:treeNode>
+			        <p:treeNode type="document" icon="ui-icon-document">
+			            <h:outputText style="font-size:20px;" value="#{doc.name}" />
+			        </p:treeNode>
+			    </p:tree>
+	        </p:layoutUnit>
+	        
+	        <p:layoutUnit position="center" id="center">
+		    	
+				<div></div>
+		    	<div><h:outputText id="errorMessage" style="font-size:20px;color:Red" value="#{dataRecorderBean.errorMessage}" /></div>
+		    	<p:growl id="growl" showDetail="true" sticky="true" />
+		    	
+				<p:dataTable id="myTable" var="tableData" value="#{dataRecorderBean.tableDatas}" selection="#{dataRecorderBean.selTableDatas}" 
+								rowKey="#{tableData.key}" resizableColumns="true" editable="true" editMode="cell" 
+									widgetVar="cellDatas" scrollable="true" scrollWidth="#{dataRecorderBean.panelSize}">
+				
+					<f:facet name="header">
+						<p:outputPanel>
+							<h:outputText id="selMenu" style="font-size:16px" value="Edit #{dataRecorderBean.selectedMenuData} Data" />
+				            <h:outputText value="&nbsp;&nbsp;" />
+			        		<h:outputText value="&nbsp;&nbsp;" />
+			        		<h:outputText value="&nbsp;&nbsp;" />
+				            <p:commandButton process="myTable" update=":form:myTable :form:myMenu :form:errorMessage" icon="fa fa-plus" value="New" actionListener="#{dataRecorderBean.buttonNewAction}"/>
+				            <p:commandButton process="myTable" update=":form:myTable :form:myMenu :form:errorMessage" icon="fa fa-remove" value="Delete" actionListener="#{dataRecorderBean.buttonDeleteAction}" />
+				        	<p:commandButton process="myTable" update=":form:myTable :form:myMenu :form:errorMessage" icon="fa fa-save" value="Save" actionListener="#{dataRecorderBean.buttonSaveAction}" />
+				        	<p:commandButton process="myTable" update=":form:myTable :form:myMenu :form:errorMessage" icon="fa fa-refresh" value="Refresh" actionListener="#{dataRecorderBean.buttonRefreshAction}" />
+			        	</p:outputPanel>
+			        </f:facet>
+			        
+					<p:ajax event="cellEdit" listener="#{dataRecorderBean.onCellEdit}"  />
+					<p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+					
+					<c:forEach items="#{dataRecorderBean.tableDataColumns}" var="column" varStatus="colLoopStatus">
+		            	<c:choose>
+		            		<c:when test="#{column.type eq 'Map'}">
+		            			<p:column headerText="#{column.header}">
+			            			<p:commandButton update=":form:detailDialog" oncomplete="PF('mapDlg').show()" value="#{tableData[column.value].keySet().toString()}" title="View">
+						                <f:setPropertyActionListener value="#{column.mapDataTypeId}" target="#{dataRecorderBean.mapDataTypeId}" />
+						                <f:setPropertyActionListener value="#{tableData[column.value]}" target="#{dataRecorderBean.selTableTempMapDataObj}" />
+										<f:setPropertyActionListener value="#{tableData[column.key]}" target="#{dataRecorderBean.selTableDataObjKey}" />
+						            </p:commandButton>
+					            </p:column>
+		            		</c:when>
+		            		<c:when test="#{column.type eq 'ListString'}" >
+		            			<p:column headerText="#{column.header}" >
+			            			<p:selectCheckboxMenu id="multiple" value="#{tableData[column.value]}" multiple="true"
+							                              filter="true" styleClass="ui-state-active" filterMatchMode="startsWith" panelStyle="300px">
+							            <f:selectItems value="#{dataRecorderBean.selTableListDataObj}" />
+							        </p:selectCheckboxMenu>
+						        </p:column>
+		            		</c:when>
+		            		<c:when test="#{column.type eq 'Boolean'}">
+			            		<p:column headerText="#{column.header}">
+			            			<p:selectBooleanCheckbox value="#{tableData[column.value]}" />
+			            		</p:column>
+		            		</c:when>
+		            		<c:when test="#{column.header eq 'WarrantyEndDate'}" sortBy="#{tableData[column.value]}" >
+	            				<p:column headerText="#{column.header}">
+					               	<p:cellEditor>
+					                  <f:facet name="output">
+					                     <h:outputText styleClass="#{dataRecorderBean.isWarrantyExpired(tableData[column.value]) eq '1' ? 'showRedText': null}" value="#{tableData[column.value]}" />
+					                  </f:facet>
+					                  <f:facet name="input">
+					                     <p:inputText styleClass="#{dataRecorderBean.isWarrantyExpired(tableData[column.value]) eq '1' ? 'showRedText': null}" value="#{tableData[column.value]}"  />
+					                  </f:facet>
+					               	</p:cellEditor>   
+				               	</p:column>
+		            		</c:when>
+		            		<c:otherwise>
+		            			<p:column headerText="#{column.header}" sortBy="#{tableData[column.value]}" >
+					               	<p:cellEditor>
+					                  <f:facet name="output">
+					                     <h:outputText value="#{tableData[column.value]}" />
+					                  </f:facet>
+					                  <f:facet name="input">
+					                     <p:inputText disabled="#{column.editable eq 'false'}"  value="#{tableData[column.value]}"  />
+					                  </f:facet>
+					               	</p:cellEditor>   
+				               	</p:column>
+			               	</c:otherwise>
+						</c:choose>   
+		         	</c:forEach>
+       				
+			    </p:dataTable>
+   			</p:layoutUnit>
+    	</p:layout>
+    	
+	    <p:dialog id="detailDialog" header="Update Contact Data" width="1200" widgetVar="mapDlg" resizable="true" appendToBody="true" modal="true" >
+	        
+	        <p:ajax event="close" listener="#{dataRecorderBean.handleDialogClose}" update=":form:mapDataDetail"/>
+	        <p:outputPanel id="mapDataDetail" style="text-align:center;">
+				
+				<h:outputText id="dialogErrorMessage" style="color:Red" value="#{dataRecorderBean.dialogErrorMessage}" />
+	            <p:dataTable id="detailTable" var="selected" value="#{dataRecorderBean.selTableTempMapDataObj.values()}"  resizableColumns="true" selection="#{dataRecorderBean.selDialogMapObjs}"  rowKey="#{selected.key}"  editable="true" editMode="cell" widgetVar="cellData">
+	            	
+	            	<p:ajax event="cellEdit" listener="#{dataRecorderBean.onMapDataCellEdit}" update=":form:myTable" />
+	            	
+	            	
+	            	<f:facet name="header" >
+	            		<h:outputText value="selected data key : #{dataRecorderBean.selTableDataObjKey}" />
+	        			<h:outputText value="&nbsp;&nbsp;" />
+	        			<h:outputText value="&nbsp;&nbsp;" />
+	        			<h:outputText value="&nbsp;&nbsp;" />
+			            <p:commandButton process="detailTable" update=":form:detailTable,:form:myTable,:form:dialogErrorMessage" icon="fa fa-plus" value="New" actionListener="#{dataRecorderBean.buttonNewMapObjAction}"/>
+			            <p:commandButton process="detailTable" update=":form:detailTable,:form:myTable,:form:dialogErrorMessage" icon="fa fa-remove" value="Delete" actionListener="#{dataRecorderBean.buttonDeleteMapObjAction}" />
+			        	<p:commandButton process="detailTable" update=":form:detailTable,:form:myTable,:form:dialogErrorMessage" icon="fa fa-save" value="Update" actionListener="#{dataRecorderBean.buttonSaveMapObjAction}" />
+			        </f:facet>
+	        
+	            	<p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+	            	
+	            	<c:forEach items="#{dataRecorderBean.selTableDataMapColumns}" var="selColumn" varStatus="colLoopStatus">
+			            <p:column headerText="#{selColumn.header}" >
+			            	<p:cellEditor>
+			                  <f:facet name="output">
+			                     <h:outputText value="#{selected[selColumn.value]}" />
+			                  </f:facet>
+			                  <f:facet name="input">
+			                     <p:inputText value="#{selected[selColumn.value]}"  />
+			                  </f:facet>
+			               	</p:cellEditor>   
+			            </p:column>
+			         </c:forEach>
+	            </p:dataTable>
+	        </p:outputPanel>
+	    </p:dialog>
+
+	</h:form>
+</h:body>
+</html>

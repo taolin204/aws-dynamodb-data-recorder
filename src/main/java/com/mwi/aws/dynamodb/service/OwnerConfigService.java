@@ -74,14 +74,14 @@ public class OwnerConfigService {
 		
 		OwnerConfig owner = new OwnerConfig();
 		owner.setAddress("");
-		owner.setOwner(dataFactory.getBusinessName());
+		owner.setOwner("Owner");
 		
 		Map contacts = new HashMap();
-		Contact contact = new Contact();
-		contact.setContactName("Mr/Mrs. ");
-		contact.setEmail("");
-		contact.setPhoneNumber("");
-		contacts.put(contact.getKey(), contact);
+//		Contact contact = new Contact();
+//		contact.setContactName("Contact");
+//		contact.setEmail("");
+//		contact.setPhoneNumber("");
+//		contacts.put(contact.getKey(), contact);
 		owner.setContacts(contacts);
 		
 		return owner;
@@ -91,7 +91,8 @@ public class OwnerConfigService {
 		
 		DataFactory dataFactory = new DataFactory();
 		Contact contact = new Contact();
-		contact.setContactName(dataFactory.getName());
+		//contact.setContactName("Mr " + dataFactory.getLastName());
+		contact.setContactName("Contact");
 		contact.setEmail("");
 		contact.setPhoneNumber("");
 		return contact;

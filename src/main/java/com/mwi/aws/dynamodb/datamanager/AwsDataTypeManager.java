@@ -117,10 +117,19 @@ public class AwsDataTypeManager {
 			InputStream in = this.getClass().getResourceAsStream("/" + AppConstants.DATA_TYPE_FILE);
 
 			xstream.fromXML(in, data);
-			System.out.println("===================================1");
+			//System.out.println("===================================1");
 			for(int i=0; i<data.getAwsDataTypes().size(); i++) {
 				AwsDataType data1= data.getAwsDataTypes().get(i);
-				System.out.println(data1.toString());
+				
+				Long panelSize = data1.getPanelSize();
+				long totalSize = 0;
+				
+				for(int j=0; j< data1.getColumnModels().size(); j++) {
+					ColumnModel column1 = data1.getColumnModels().get(j);
+					totalSize = totalSize + column1.getColumnSize();
+				}
+				data1.setPanelSize(totalSize);
+				System.out.println("total size for data1 " + data1.getDataTypeId() + ", size " + totalSize);
 				awsDataMap.put(data1.getDataTypeId(), data1);
 			}
 

@@ -19,6 +19,7 @@ import com.mfg.OwnerConfig;
 import com.mfg.SensorConfig;
 import com.mfg.UserConfig;
 import com.mfg.UserPermissions;
+import com.mwi.aws.dynamodb.service.AwsService;
 
 public class Main {
 
@@ -32,14 +33,14 @@ public class Main {
     public static void main(String[] args) {
     	initDb();
 
-    	testAddOwner();
-    	testAddUser();
+//    	testAddOwner();
+//    	testAddUser();
     	testAddSensor();
-    	
-    	testReadOwner();
-    	testReadUser();
-    	testReadSensor();
-    	testGetSensorByOwner();
+//    	
+//    	testReadOwner();
+//    	testReadUser();
+//    	testReadSensor();
+//    	testGetSensorByOwner();
     }
     
     public static void initDb() {
@@ -101,6 +102,7 @@ public class Main {
     public static void testAddUser() {
 		UserConfig userConfig = new UserConfig();
 		userConfig.setIdentityId("user2");
+		userConfig.setPassword("password");
 		userConfig.setUserName("user name 2");
 
 		List<String> managedOwners = new ArrayList();
@@ -147,6 +149,8 @@ public class Main {
     	sensorConfig.setSerialNumber("SN0000001");
     	sensorConfig.setSoftwareInstalled("PESONA Card");
     	sensorConfig.setSoftwareLicense("LIC0000001");
+    	sensorConfig.setWarrantyStartDate("01/01/2017");
+    	sensorConfig.setWarrantyEndDate("01/01/2017");
     	sensorConfig.setType("Printer");
     	
     	List contactNames = new ArrayList();
@@ -184,6 +188,11 @@ public class Main {
 				+ ", address=" + sensorConfig.getAddress()
 				);
 		}
+		List<SensorConfig> result = new ArrayList();
+		result.addAll(sensorConfigList);
+		
+		result.add(
+				AwsService.getInstance().getSensorConfigService().createSensorConfigDummy("Company AAA"));
     }
 
 //    public static void testGetSensorByOwner() {

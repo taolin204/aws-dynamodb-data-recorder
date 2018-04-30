@@ -119,19 +119,26 @@ public class AwsService {
      * Init AWS region.
      */
     private void initAwsRegion() {
+    	
+    	serverConfiguration = SystemConfig.getProperty("aws.dynamodb.server.configuration", "local");
+    	DebugUtil.log("serverConfiguration " + serverConfiguration);
+    	
         String regionName;
-
-//        String prop = System.getProperty("region");
-//        if (prop != null) {
-//            // region for local testing purpose
-//            regionName = prop;
-//        } else{
-//            // get region name from EC2 environment
-//            regionName = Regions.getCurrentRegion().getName();
-//        }
+        if(serverConfiguration.equals("local")) {
+        	regionName = "ap-southeast-1";
+        } else {
+        	String prop = System.getProperty("region");
+	        if (prop != null) {
+	            // region for local testing purpose
+	            regionName = prop;
+	        } else{
+	            // get region name from EC2 environment
+	            regionName = Regions.getCurrentRegion().getName();
+	        }
+        }
         
+        DebugUtil.log("AWS region " + regionName);
         regionName = "ap-southeast-1";
-        logger.debug("AWS region " + regionName);
         regionName = regionName.replaceAll("-", "_").toUpperCase();
         region = Regions.valueOf(regionName);
     }
@@ -140,9 +147,7 @@ public class AwsService {
      * init DynamoDB client.
      */
     private void initDynamoDbClient() {
-    	
-    	serverConfiguration = SystemConfig.getProperty("aws.dynamodb.server.configuration", "local");
-    	DebugUtil.log("serverConfiguration " + serverConfiguration);
+
     	if(serverConfiguration.equals("local")) {
     		// The secret key doesn't need to be valid, DynamoDB Local doesn't care.
         	AWSCredentials credentials = new BasicAWSCredentials(
@@ -165,6 +170,9 @@ public class AwsService {
         	db = new DynamoDB(dynamoDBLocalClient);
         	
     	} else {
+    		
+    		DebugUtil.log("region " + region);
+    		
 	        ClientConfiguration clientConfig = new ClientConfiguration()
 	                .withClientExecutionTimeout(15000) //set 5000ms timeout
 	                .withRequestTimeout(15000)
@@ -173,6 +181,7 @@ public class AwsService {
 	                .withMaxErrorRetry(0);
 	
 	        	
+	        
 	        dynamoDbClient = new AmazonDynamoDBClient(clientConfig).withRegion(region);
 	
 	        mapper = new DynamoDBMapper(dynamoDbClient); 
@@ -288,13 +297,15 @@ public class AwsService {
 		this.userConfigTable = userConfigTable;
 	}
 	
-	public boolean validateUserLogin(String userName) {
+	public boolean validateUserLogin(String userName, String password) {
 		boolean result = true;
 		if(this.serverConfiguration.equals("test")) {
 	    	
 	    } else {
 			UserConfig  userConfig = mapper.load(UserConfig.class, userName); 
-			if(userConfig != null) {
+			if(userConfig != null 
+					&& userConfig.getIdentityId().equals(userName)
+					&& userConfig.getPassword().equals(password)) {
 				DebugUtil.log("userId=" + userConfig.getIdentityId()
 		    		+ ", name=" + userConfig.getUserName());
 				this.setLoggedInUser(userConfig);
@@ -359,6 +370,11 @@ public class AwsService {
 		}
 		
 		return ownerList;
+	}
+	
+	public OwnerConfig loadOwnerConfig(String owner) {
+		OwnerConfig ownerConfig = mapper.load(OwnerConfig.class, owner); 
+		return ownerConfig;
 	}
 	
 	public OwnerConfig loadOwnerConfig(String owner, DynamoDBMapper mapper) {
@@ -426,8 +442,12 @@ public class AwsService {
 		Table sensorConfigTable = db.getTable(SensorConfig.DB_TABLE_NAME);
 		
 		sensorConfigList = getSensorsByOwner(sensorConfigTable, owner, mapper);
-				
-		return sensorConfigList;
+		
+		//returned sensorList is not editable, need create another list to return.
+		List result = new ArrayList();
+		result.addAll(sensorConfigList);
+		
+		return result;
 	}
 	
 	
@@ -543,7 +563,7 @@ public class AwsService {
 			contacts[2] = "Mrs Smith";
 		} else {
 			OwnerConfig ownerConfig = this.loadOwnerConfig(owner, mapper);
-			DebugUtil.log("ownerConfig " + ownerConfig);
+			//DebugUtil.log("ownerConfig " + ownerConfig);
 			contacts = new String[ownerConfig.getContacts().size()];
 			//for(int i=0; i<ownerConfig.getContacts().size(); i++) {
 			//	contacts[i] = ownerConfig.getContacts().keySet().
@@ -763,7 +783,7 @@ public class AwsService {
 //			System.out.println((String) obj);
 //		}
 		
-		Table sensorConfigTable = db.getTable(SensorConfig.DB_TABLE_NAME);
+//		Table sensorConfigTable = db.getTable(SensorConfig.DB_TABLE_NAME);
 //		List sensorConfigList = RequestCommon.getSensorsByOwner(sensorConfigTable, "Company AAA", mapper);
 //		DebugUtil.log(sensorConfigList.toString());
 

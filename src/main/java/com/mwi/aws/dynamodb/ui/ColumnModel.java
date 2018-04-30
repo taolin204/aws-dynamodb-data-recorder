@@ -12,7 +12,9 @@ public class ColumnModel implements Serializable {
 	private String value;
 	private String header;
 	private String type;
+	private Long columnSize;
 	private Long mapDataTypeId;
+	private String editable = "true";
 	
 	public ColumnModel() {}
 	
@@ -59,6 +61,27 @@ public class ColumnModel implements Serializable {
 
 	public void setMapDataTypeId(Long mapDataTypeId) {
 		this.mapDataTypeId = mapDataTypeId;
+	}
+
+	
+
+	public Long getColumnSize() {
+		return columnSize;
+	}
+
+
+	public void setColumnSize(Long columnSize) {
+		this.columnSize = columnSize;
+	}
+
+
+	public String getEditable() {
+		return editable;
+	}
+
+
+	public void setEditable(String editable) {
+		this.editable = editable;
 	}
 
 

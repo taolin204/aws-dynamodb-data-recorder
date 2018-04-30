@@ -185,3 +185,16 @@ form{
 .vertical-top-align td{
     vertical-align: top !important;
 }
+
+.ui-selectonemenu-items {
+	background-color : rgb(255,255,255) !important;
+}
+
+.ui-selectcheckboxmenu-input-token input {
+    background-color: rgb(255,255,255) !important;
+}
+
+.ui-state-active { 
+	background: rgb(255,255,255) !important;; 
+}
+
